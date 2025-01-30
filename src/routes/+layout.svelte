@@ -1,7 +1,10 @@
 <script lang="ts">
 	import '../app.css'
+	import PocketbaseProvider from '@/components/providers/pocketbase-provider.svelte'
 
 	let { children } = $props()
 </script>
 
-{@render children()}
+<PocketbaseProvider>
+	{@render children()}
+</PocketbaseProvider>
