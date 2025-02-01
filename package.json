@@ -10,11 +10,13 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
-		"ui": "bun x shadcn-svelte@next"
+		"ui": "bun x shadcn-svelte@next",
+		"prisma": "prisma"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
+		"@prisma/client": "^6.3.0",
 		"@sveltejs/adapter-vercel": "^5.5.3",
 		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
@@ -45,5 +47,8 @@
 	"packageManager": "bun@1.2.1",
 	"engines": {
 		"node": ">=20"
+	},
+	"dependencies": {
+		"prisma": "^6.3.0"
 	}
 }
