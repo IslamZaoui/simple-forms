@@ -1,0 +1,27 @@
+<script lang="ts">
+	import { Button } from '@/components/ui/button'
+
+	let { children } = $props()
+</script>
+
+<div class="flex min-h-screen w-full flex-col bg-background text-foreground">
+	<header class="container flex h-14 items-center">
+		<div class="flex w-full items-center justify-between">
+			<a href="/" class="flex items-center gap-2 font-semibold">
+				<img src="/favicon.png" alt="Simple Forms Logo" class="size-6" />
+				<span>Simple Forms</span>
+			</a>
+			<Button variant="ghost" size="sm">Contact</Button>
+		</div>
+	</header>
+
+	{@render children()}
+
+	<footer class="container pb-8">
+		<div class="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+			<a href="#" class="hover:text-primary">Help</a>
+			<a href="#" class="hover:text-primary">Terms</a>
+			<a href="#" class="hover:text-primary">Privacy</a>
+		</div>
+	</footer>
+</div>
