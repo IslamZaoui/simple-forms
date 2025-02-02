@@ -10,6 +10,7 @@
 	import { toast } from 'svelte-sonner'
 	import { page } from '$app/state'
 	import { getFlash } from 'sveltekit-flash-message'
+	import { Toaster } from '@/components/ui/sonner'
 
 	const flash = getFlash(page)
 
@@ -35,3 +36,5 @@
 		$flash = undefined
 	})
 </script>
+
+<Toaster richColors />
