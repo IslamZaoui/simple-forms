@@ -13,7 +13,7 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<Button variant="outline" class="relative">
+			<Button variant="outline" class="relative" href="/auth/github">
 				<GithubIcon class="absolute left-4 size-4" />
 				Continue with GitHub
 			</Button>
