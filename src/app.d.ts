@@ -3,7 +3,9 @@ import type { AuthData } from '@/server/auth/session'
 
 declare global {
 	namespace App {
-		// interface Error {}
+		interface Error {
+			details?: string
+		}
 		interface Locals {
 			auth(): AuthData | null
 		}
