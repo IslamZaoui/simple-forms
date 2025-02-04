@@ -3,6 +3,10 @@ import { sha256 } from '@oslojs/crypto/sha2'
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding'
 import type { Session } from '@prisma/client'
 
+export type SessionFlags = {
+	rememberMe: boolean
+}
+
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20)
 	crypto.getRandomValues(bytes)
@@ -10,14 +14,19 @@ export function generateSessionToken(): string {
 	return token
 }
 
-export async function createSession(token: string, userId: string): Promise<AuthData> {
+export async function createSession(
+	token: string,
+	userId: string,
+	flags: SessionFlags
+): Promise<AuthData> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
+	const sessionDuration = flags.rememberMe ? 1000 * 60 * 60 * 24 * 30 : 1000 * 60 * 60 * 24 * 1
 
 	return await prisma.session.create({
 		data: {
 			id: sessionId,
 			userId,
-			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+			expiresAt: new Date(Date.now() + sessionDuration)
 		},
 		include: {
 			user: true

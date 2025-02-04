@@ -1,8 +1,8 @@
 import { DEFAULT_REDIRECT_AUTHED_USER_URL } from '@/config/auth'
-import { registerSchema } from '@/schemas/auth'
+import { loginSchema } from '@/schemas/auth'
 import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { createSession, generateSessionToken } from '@/server/auth/session'
-import { createUser, isEmailTaken } from '@/server/auth/utils'
+import { getValidUser } from '@/server/auth/utils'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -11,17 +11,8 @@ import type { Actions, PageServerLoad } from './$types'
 export const load: PageServerLoad = async (event) => {
 	await event.parent()
 
-	const email = event.cookies.get('email') ?? null
-	event.cookies.delete('email', { path: '/' })
-
 	return {
-		form: await superValidate(zod(registerSchema), {
-			defaults: {
-				email: email ?? '',
-				password: '',
-				confirmPassword: ''
-			}
-		})
+		form: await superValidate(zod(loginSchema))
 	}
 }
 
@@ -31,21 +22,21 @@ export const actions: Actions = {
 			redirect(302, DEFAULT_REDIRECT_AUTHED_USER_URL)
 		}
 
-		const form = await superValidate(event, zod(registerSchema))
+		const form = await superValidate(event, zod(loginSchema))
 
 		if (!form.valid) {
 			return fail(400, { form })
 		}
 
-		if (await isEmailTaken(form.data.email)) {
-			return setError(form, 'email', 'Email already taken')
+		const existingUser = await getValidUser(form.data.email, form.data.password)
+
+		if (!existingUser) {
+			return setError(form, 'email', 'Invalid email or password')
 		}
 
-		const newUser = await createUser(form.data)
-
 		const sessionToken = generateSessionToken()
-		const session = await createSession(sessionToken, newUser.id, {
-			rememberMe: true
+		const session = await createSession(sessionToken, existingUser.id, {
+			rememberMe: form.data.rememberMe
 		})
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
@@ -53,7 +44,7 @@ export const actions: Actions = {
 			DEFAULT_REDIRECT_AUTHED_USER_URL,
 			{
 				type: 'success',
-				message: 'You have successfully registered'
+				message: 'You have successfully logged in'
 			},
 			event
 		)

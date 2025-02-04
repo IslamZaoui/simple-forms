@@ -13,7 +13,10 @@
 				<img src="/favicon.png" alt="Simple Forms Logo" class="size-6" />
 				<span>Simple Forms</span>
 			</a>
-			<Button variant="ghost" size="sm">Contact</Button>
+			<div class="space-x-2">
+				<Button variant="ghost" size="sm">Contact</Button>
+				<Button variant="ghost" size="sm" href="/auth/login">Login</Button>
+			</div>
 		</div>
 	</header>
 

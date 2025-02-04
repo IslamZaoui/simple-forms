@@ -33,3 +33,9 @@ export const registerSchema = z
 			ctx.addIssue({ code: 'custom', message: 'Passwords do not match', path: ['password'] })
 		}
 	})
+
+export const loginSchema = z.object({
+	email,
+	password,
+	rememberMe: z.boolean().default(false)
+})

@@ -1,4 +1,4 @@
-import { hashPassword } from '@/server/auth/password'
+import { hashPassword, verifyPasswordHash } from '@/server/auth/password'
 import { prisma } from '@/server/database'
 
 export async function isEmailTaken(email: string) {
@@ -15,4 +15,21 @@ export async function createUser(data: { name?: string; email: string; password:
 			passwordHash
 		}
 	})
+}
+
+export async function getValidUser(email: string, password: string) {
+	const user = await prisma.user.findUnique({ where: { email } })
+
+	if (!user) {
+		return null
+	}
+
+	const isPasswordValid =
+		!user.passwordHash || (await verifyPasswordHash(user.passwordHash, password))
+
+	if (!isPasswordValid) {
+		return null
+	}
+
+	return user
 }

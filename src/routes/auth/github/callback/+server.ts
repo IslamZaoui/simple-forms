@@ -114,7 +114,9 @@ export const GET: RequestHandler = async (event) => {
 
 	if (existingUser) {
 		const sessionToken = generateSessionToken()
-		const session = await createSession(sessionToken, existingUser.id)
+		const session = await createSession(sessionToken, existingUser.id, {
+			rememberMe: true
+		})
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 		redirect(
@@ -163,7 +165,9 @@ export const GET: RequestHandler = async (event) => {
 	})
 
 	const sessionToken = generateSessionToken()
-	const session = await createSession(sessionToken, user.id)
+	const session = await createSession(sessionToken, user.id, {
+		rememberMe: true
+	})
 	setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 	redirect(
