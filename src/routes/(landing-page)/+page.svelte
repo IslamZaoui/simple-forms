@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from '$app/forms'
 	import { Button } from '@/components/ui/button'
 	import { Input } from '@/components/ui/input'
 	import { Separator } from '@/components/ui/separator'
@@ -28,12 +29,18 @@
 			</div>
 		</div>
 
-		<div class="space-y-4">
+		<form class="space-y-4" method="post" use:enhance>
 			<div class="space-y-2">
-				<Input type="email" placeholder="name@example.com" class="h-11" />
+				<Input
+					type="email"
+					name="email"
+					autocomplete="email"
+					placeholder="name@example.com"
+					class="h-11"
+				/>
 			</div>
-			<Button class="w-full">Continue with Email</Button>
-		</div>
+			<Button class="w-full" type="submit">Continue with Email</Button>
+		</form>
 
 		<div class="px-8 text-center text-sm text-muted-foreground">
 			<p>
