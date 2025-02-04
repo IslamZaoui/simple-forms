@@ -1,17 +1,14 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form'
-	import { Input, PasswordInput } from '@/components/ui/input'
+	import { Input } from '@/components/ui/input'
+	import { PasswordInput } from '@/components/ui/password-input'
 	import { loginSchema } from '@/schemas/auth'
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
 	import Separator from '@/components/ui/separator/separator.svelte'
-	import PasswordValidation, {
-		type PasswordError
-	} from '@/components/forms/auth/password-validation.svelte'
 	import MessageAlert from '@/components/forms/message-alert.svelte'
 	import { Checkbox } from '@/components/ui/checkbox'
-	import { Button } from '@/components/ui/button'
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof loginSchema>> } } = $props()
 

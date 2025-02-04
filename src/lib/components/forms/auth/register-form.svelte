@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form'
-	import { Input, PasswordInput } from '@/components/ui/input'
+	import { Input } from '@/components/ui/input'
+	import { PasswordInput } from '@/components/ui/password-input'
 	import { registerSchema } from '@/schemas/auth'
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
 	import { zodClient } from 'sveltekit-superforms/adapters'
