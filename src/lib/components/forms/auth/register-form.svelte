@@ -11,6 +11,7 @@
 		type PasswordError
 	} from '@/components/forms/auth/password-validation.svelte'
 	import MessageAlert from '@/components/forms/message-alert.svelte'
+	import { LOGIN_URL } from '@/config/auth'
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof registerSchema>> } } = $props()
 
@@ -104,6 +105,6 @@
 	<Separator />
 
 	<div class="text-center text-sm text-muted-foreground">
-		Already have an account? <a href="/auth/login" class="text-primary underline">Login</a>
+		Already have an account? <a href={LOGIN_URL} class="text-primary underline">Login</a>
 	</div>
 </form>

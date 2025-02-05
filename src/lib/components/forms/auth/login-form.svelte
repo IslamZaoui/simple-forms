@@ -9,6 +9,7 @@
 	import Separator from '@/components/ui/separator/separator.svelte'
 	import MessageAlert from '@/components/forms/message-alert.svelte'
 	import { Checkbox } from '@/components/ui/checkbox'
+	import { REGISTER_URL } from '@/config/auth'
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof loginSchema>> } } = $props()
 
@@ -77,6 +78,6 @@
 	<Separator />
 
 	<div class="text-center text-sm text-muted-foreground">
-		Don't have an account? <a href="/auth/register" class="text-primary underline">Register</a>
+		Don't have an account? <a href={REGISTER_URL} class="text-primary underline">Register</a>
 	</div>
 </form>

@@ -1,4 +1,4 @@
-import { DEFAULT_REDIRECT_AUTHED_USER_URL } from '@/config/auth'
+import { REDIRECT_AUTHED_USER_URL } from '@/config/auth'
 import { loginSchema } from '@/schemas/auth'
 import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { createSession, generateSessionToken } from '@/server/auth/session'
@@ -19,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	default: async (event) => {
 		if (event.locals.auth()) {
-			redirect(302, DEFAULT_REDIRECT_AUTHED_USER_URL)
+			redirect(302, REDIRECT_AUTHED_USER_URL)
 		}
 
 		const form = await superValidate(event, zod(loginSchema))
@@ -41,7 +41,7 @@ export const actions: Actions = {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 		redirect(
-			DEFAULT_REDIRECT_AUTHED_USER_URL,
+			REDIRECT_AUTHED_USER_URL,
 			{
 				type: 'success',
 				message: 'You have successfully logged in'

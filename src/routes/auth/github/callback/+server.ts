@@ -1,4 +1,4 @@
-import { DEFAULT_REDIRECT_AUTHED_USER_URL, DEFAULT_REDIRECT_UNAUTHED_USER_URL } from '@/config/auth'
+import { REDIRECT_AUTHED_USER_URL, REDIRECT_UNAUTHED_USER_URL } from '@/config/auth'
 import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { github } from '@/server/auth/oauth'
 import { createSession, generateSessionToken } from '@/server/auth/session'
@@ -60,7 +60,7 @@ const getGithubUser = async (accessToken: string): Promise<GithubUser> => {
 
 export const GET: RequestHandler = async (event) => {
 	if (event.locals.auth()) {
-		redirect(302, DEFAULT_REDIRECT_AUTHED_USER_URL)
+		redirect(302, REDIRECT_AUTHED_USER_URL)
 	}
 
 	const code = event.url.searchParams.get('code')
@@ -69,7 +69,7 @@ export const GET: RequestHandler = async (event) => {
 
 	if (code === null || state === null || (storedState === null && storedState !== state)) {
 		redirect(
-			DEFAULT_REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_UNAUTHED_USER_URL,
 			{
 				type: 'error',
 				message: 'Invalid OAuth state'
@@ -83,7 +83,7 @@ export const GET: RequestHandler = async (event) => {
 		tokens = await github.validateAuthorizationCode(code)
 	} catch {
 		redirect(
-			DEFAULT_REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_UNAUTHED_USER_URL,
 			{
 				type: 'error',
 				message: 'Invalid OAuth code'
@@ -97,7 +97,7 @@ export const GET: RequestHandler = async (event) => {
 		githubUser = await getGithubUser(tokens.accessToken())
 	} catch (err) {
 		redirect(
-			DEFAULT_REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_UNAUTHED_USER_URL,
 			{
 				type: 'error',
 				message: (err as Error).message
@@ -120,7 +120,7 @@ export const GET: RequestHandler = async (event) => {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 		redirect(
-			DEFAULT_REDIRECT_AUTHED_USER_URL,
+			REDIRECT_AUTHED_USER_URL,
 			{
 				type: 'success',
 				message: 'Signed in successfully',
@@ -135,7 +135,7 @@ export const GET: RequestHandler = async (event) => {
 		email = await getGithubEmail(tokens.accessToken())
 	} catch (err) {
 		redirect(
-			DEFAULT_REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_UNAUTHED_USER_URL,
 			{
 				type: 'error',
 				message: (err as Error).message
@@ -146,7 +146,7 @@ export const GET: RequestHandler = async (event) => {
 
 	if (await isEmailTaken(email)) {
 		redirect(
-			DEFAULT_REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_UNAUTHED_USER_URL,
 			{
 				type: 'error',
 				message: 'Email already taken',
@@ -171,7 +171,7 @@ export const GET: RequestHandler = async (event) => {
 	setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 	redirect(
-		DEFAULT_REDIRECT_AUTHED_USER_URL,
+		REDIRECT_AUTHED_USER_URL,
 		{
 			type: 'success',
 			message: 'Signed up successfully',
