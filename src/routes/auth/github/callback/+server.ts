@@ -1,8 +1,13 @@
-import { REDIRECT_AUTHED_USER_URL, REDIRECT_UNAUTHED_USER_URL } from '@/config/auth'
+import {
+	REDIRECT_AFTER_LOGIN_URL,
+	REDIRECT_AFTER_REGISTER_URL,
+	REDIRECT_GUEST_URL,
+	REDIRECT_USER_URL
+} from '@/config/auth'
 import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { github } from '@/server/auth/oauth'
 import { createSession, generateSessionToken } from '@/server/auth/session'
-import { isEmailTaken } from '@/server/auth/utils'
+import { isEmailTaken } from '@/server/auth/user'
 import { prisma } from '@/server/database'
 import type { OAuth2Tokens } from 'arctic'
 import { redirect } from 'sveltekit-flash-message/server'
@@ -60,7 +65,7 @@ const getGithubUser = async (accessToken: string): Promise<GithubUser> => {
 
 export const GET: RequestHandler = async (event) => {
 	if (event.locals.auth()) {
-		redirect(302, REDIRECT_AUTHED_USER_URL)
+		redirect(302, REDIRECT_USER_URL)
 	}
 
 	const code = event.url.searchParams.get('code')
@@ -69,7 +74,7 @@ export const GET: RequestHandler = async (event) => {
 
 	if (code === null || state === null || (storedState === null && storedState !== state)) {
 		redirect(
-			REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_GUEST_URL,
 			{
 				type: 'error',
 				message: 'Invalid OAuth state'
@@ -83,7 +88,7 @@ export const GET: RequestHandler = async (event) => {
 		tokens = await github.validateAuthorizationCode(code)
 	} catch {
 		redirect(
-			REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_GUEST_URL,
 			{
 				type: 'error',
 				message: 'Invalid OAuth code'
@@ -97,7 +102,7 @@ export const GET: RequestHandler = async (event) => {
 		githubUser = await getGithubUser(tokens.accessToken())
 	} catch (err) {
 		redirect(
-			REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_GUEST_URL,
 			{
 				type: 'error',
 				message: (err as Error).message
@@ -120,7 +125,7 @@ export const GET: RequestHandler = async (event) => {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 		redirect(
-			REDIRECT_AUTHED_USER_URL,
+			REDIRECT_AFTER_LOGIN_URL,
 			{
 				type: 'success',
 				message: 'Signed in successfully',
@@ -135,7 +140,7 @@ export const GET: RequestHandler = async (event) => {
 		email = await getGithubEmail(tokens.accessToken())
 	} catch (err) {
 		redirect(
-			REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_GUEST_URL,
 			{
 				type: 'error',
 				message: (err as Error).message
@@ -146,7 +151,7 @@ export const GET: RequestHandler = async (event) => {
 
 	if (await isEmailTaken(email)) {
 		redirect(
-			REDIRECT_UNAUTHED_USER_URL,
+			REDIRECT_GUEST_URL,
 			{
 				type: 'error',
 				message: 'Email already taken',
@@ -171,11 +176,11 @@ export const GET: RequestHandler = async (event) => {
 	setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 	redirect(
-		REDIRECT_AUTHED_USER_URL,
+		REDIRECT_AFTER_REGISTER_URL,
 		{
 			type: 'success',
 			message: 'Signed up successfully',
-			description: `Welcome, ${user.name} to Simple Forms`
+			description: `Verify your email to continue`
 		},
 		event
 	)

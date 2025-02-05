@@ -1,35 +1,4 @@
-import { hashPassword, verifyPasswordHash } from '@/server/auth/password'
-import { prisma } from '@/server/database'
+import { alphabet, generateRandomString } from 'oslo/crypto'
 
-export async function isEmailTaken(email: string) {
-	const user = await prisma.user.findUnique({ where: { email } })
-	return !!user
-}
-
-export async function createUser(data: { name?: string; email: string; password: string }) {
-	const passwordHash = await hashPassword(data.password)
-	return await prisma.user.create({
-		data: {
-			name: data.name,
-			email: data.email,
-			passwordHash
-		}
-	})
-}
-
-export async function getValidUser(email: string, password: string) {
-	const user = await prisma.user.findUnique({ where: { email } })
-
-	if (!user) {
-		return null
-	}
-
-	const isPasswordValid =
-		!user.passwordHash || (await verifyPasswordHash(user.passwordHash, password))
-
-	if (!isPasswordValid) {
-		return null
-	}
-
-	return user
-}
+export const generateRandomOTP = (length: number = 6) =>
+	generateRandomString(length, alphabet('0-9', 'A-Z'))

@@ -1,8 +1,8 @@
-import { REDIRECT_AUTHED_USER_URL } from '@/config/auth'
+import { REDIRECT_AFTER_REGISTER_URL, REDIRECT_USER_URL } from '@/config/auth'
 import { registerSchema } from '@/schemas/auth'
 import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { createSession, generateSessionToken } from '@/server/auth/session'
-import { createUser, isEmailTaken } from '@/server/auth/utils'
+import { createUser, isEmailTaken } from '@/server/auth/user'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
@@ -28,7 +28,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	default: async (event) => {
 		if (event.locals.auth()) {
-			redirect(302, REDIRECT_AUTHED_USER_URL)
+			redirect(302, REDIRECT_USER_URL)
 		}
 
 		const form = await superValidate(event, zod(registerSchema))
@@ -50,10 +50,11 @@ export const actions: Actions = {
 		setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 		redirect(
-			REDIRECT_AUTHED_USER_URL,
+			REDIRECT_AFTER_REGISTER_URL,
 			{
 				type: 'success',
-				message: 'You have successfully registered'
+				message: 'You have successfully registered',
+				description: 'Verify your email to continue'
 			},
 			event
 		)

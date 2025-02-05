@@ -1,4 +1,4 @@
-import { REDIRECT_AUTHED_USER_URL, REGISTER_URL } from '@/config/auth'
+import { REDIRECT_USER_URL, REGISTER_URL } from '@/config/auth'
 import { redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ parent }) => {
 export const actions: Actions = {
 	default: async ({ request, cookies, locals }) => {
 		if (locals.auth()) {
-			redirect(302, REDIRECT_AUTHED_USER_URL)
+			redirect(302, REDIRECT_USER_URL)
 		}
 
 		const form = await request.formData()
