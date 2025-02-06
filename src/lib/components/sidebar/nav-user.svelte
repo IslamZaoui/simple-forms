@@ -6,9 +6,11 @@
 	import { useSidebar } from '@/components/ui/sidebar'
 	import { BeamAvatar } from '@/components/ui/boring-avatars'
 	import { goto } from '$app/navigation'
+	import { LOGOUT_URL } from '@/config/auth'
+	import type { UserWithoutSecrets } from '@/server/database'
 
 	interface Props {
-		user: User
+		user: UserWithoutSecrets
 	}
 
 	let { user }: Props = $props()
@@ -53,7 +55,7 @@
 					{@render UserInfo()}
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item onclick={() => goto('/signout')}>
+				<DropdownMenu.Item onclick={() => goto(LOGOUT_URL)}>
 					<LogOut />
 					Log out
 				</DropdownMenu.Item>

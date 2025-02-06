@@ -1,6 +1,6 @@
 export const LOGIN_URL = '/auth/login'
 export const REGISTER_URL = '/auth/register'
-export const LOGOUT_URL = '/signout'
+export const LOGOUT_URL = '/logout'
 export const VERIFY_EMAIL_URL = '/verify-email'
 export const FORGOT_PASSWORD_URL = '/password/forgot'
 export const RESET_PASSWORD_URL = '/password/reset'
