@@ -1,18 +1,18 @@
 import z from 'zod'
 
-const name = z
+export const name = z
 	.string()
 	.min(5, 'Name must be at least 5 characters long')
 	.max(20, 'Name must be at most 50 characters long')
 	.trim()
 	.optional()
 
-const email = z
+export const email = z
 	.string({ required_error: 'Email is required' })
 	.email('Invalid email address')
 	.trim()
 
-const password = z
+export const password = z
 	.string({ required_error: 'Password is required' })
 	.min(8, 'Password must be at least 8 characters long')
 	.max(71, 'Password must be at most 71 characters long')

@@ -1,6 +1,10 @@
 import { hashPassword, verifyPasswordHash } from '@/server/auth/utils'
 import { prisma } from '@/server/database'
 
+export async function getUserByEmail(email: string) {
+	return await prisma.user.findUnique({ where: { email } })
+}
+
 export async function isEmailTaken(email: string) {
 	const user = await prisma.user.findUnique({ where: { email } })
 	return !!user
@@ -42,6 +46,30 @@ export async function updateUserVerifiedEmail(userId: string, email: string) {
 		data: {
 			email: email,
 			emailVerified: true
+		}
+	})
+}
+
+export async function setUserAsEmailVerifiedIfEmailMatches(userId: string, email: string) {
+	return await prisma.user.update({
+		where: {
+			id: userId,
+			email
+		},
+		data: {
+			emailVerified: true
+		}
+	})
+}
+
+export async function updateUserPassword(userId: string, password: string) {
+	const passwordHash = await hashPassword(password)
+	await prisma.user.update({
+		where: {
+			id: userId
+		},
+		data: {
+			passwordHash
 		}
 	})
 }

@@ -9,7 +9,7 @@
 	import Separator from '@/components/ui/separator/separator.svelte'
 	import MessageAlert from '@/components/forms/message-alert.svelte'
 	import { Checkbox } from '@/components/ui/checkbox'
-	import { REGISTER_URL } from '@/config/auth'
+	import { FORGOT_PASSWORD_URL, REGISTER_URL } from '@/config/auth'
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof loginSchema>> } } = $props()
 
@@ -65,7 +65,7 @@
 			</Form.Control>
 		</Form.Field>
 
-		<a class="text-sm text-primary hover:underline" href="#">Forgot Password?</a>
+		<a class="text-sm text-primary hover:underline" href={FORGOT_PASSWORD_URL}>Forgot Password?</a>
 	</div>
 
 	<Form.Button class="relative w-full" disabled={$delayed}>

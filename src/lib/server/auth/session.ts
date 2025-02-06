@@ -87,6 +87,10 @@ export function deleteSessionTokenCookie(event: RequestEvent): void {
 	event.cookies.delete('session', { path: '/' })
 }
 
+export async function invalidateUserSessions(userId: string) {
+	await prisma.session.deleteMany({ where: { userId } })
+}
+
 export type AuthData = Session & {
 	user: UserWithoutSecrets
 }

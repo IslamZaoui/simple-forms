@@ -17,12 +17,7 @@
 	const { form: formData, enhance, delayed, message } = form
 </script>
 
-<form
-	class="mx-auto w-full max-w-[280px] space-y-5 py-1"
-	action="?/verify"
-	method="POST"
-	use:enhance
->
+<form class="mx-auto w-full max-w-sm space-y-5 py-1" action="?/verify" method="POST" use:enhance>
 	<MessageAlert {message} />
 
 	<Form.Field {form} name="code">
