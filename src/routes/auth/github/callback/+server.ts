@@ -4,9 +4,8 @@ import {
 	REDIRECT_GUEST_URL,
 	REDIRECT_USER_URL
 } from '@/config/auth'
-import { setSessionTokenCookie } from '@/server/auth/cookie'
 import { github } from '@/server/auth/oauth'
-import { createSession, generateSessionToken } from '@/server/auth/session'
+import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session'
 import { isEmailTaken } from '@/server/auth/user'
 import { prisma } from '@/server/database'
 import type { OAuth2Tokens } from 'arctic'

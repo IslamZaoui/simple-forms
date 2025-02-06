@@ -1,13 +1,11 @@
 import { REDIRECT_GUEST_URL, REDIRECT_USER_URL } from '@/config/auth'
 import { verifyEmailSchema } from '@/schemas/post-auth'
 import {
+	createEmailVerificationRequest,
 	deleteEmailVerificationRequestCookie,
+	deleteUserEmailVerificationRequest,
 	getUserEmailVerificationRequestFromCookie,
 	setEmailVerificationRequestCookie
-} from '@/server/auth/cookie'
-import {
-	createEmailVerificationRequest,
-	deleteUserEmailVerificationRequest
 } from '@/server/auth/email-verification'
 import { updateUserVerifiedEmail } from '@/server/auth/user'
 import { sendVerificationEmail } from '@/server/mail/email-verification'

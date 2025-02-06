@@ -2,6 +2,7 @@ import { prisma, type UserWithoutSecrets } from '@/server/database'
 import { sha256 } from '@oslojs/crypto/sha2'
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding'
 import type { Session } from '@prisma/client'
+import type { RequestEvent } from '@sveltejs/kit'
 
 export type SessionFlags = {
 	rememberMe: boolean
@@ -71,6 +72,19 @@ export async function validateSessionToken(token: string): Promise<AuthData | nu
 
 export async function invalidateSession(sessionId: string): Promise<void> {
 	await prisma.session.delete({ where: { id: sessionId } })
+}
+
+export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
+	event.cookies.set('session', token, {
+		httpOnly: true,
+		sameSite: 'lax',
+		expires: expiresAt,
+		path: '/'
+	})
+}
+
+export function deleteSessionTokenCookie(event: RequestEvent): void {
+	event.cookies.delete('session', { path: '/' })
 }
 
 export type AuthData = Session & {

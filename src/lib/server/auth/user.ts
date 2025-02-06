@@ -1,4 +1,4 @@
-import { hashPassword, verifyPasswordHash } from '@/server/auth/password'
+import { hashPassword, verifyPasswordHash } from '@/server/auth/utils'
 import { prisma } from '@/server/database'
 
 export async function isEmailTaken(email: string) {

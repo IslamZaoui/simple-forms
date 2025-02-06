@@ -1,7 +1,6 @@
 import { REDIRECT_AFTER_REGISTER_URL, REDIRECT_USER_URL } from '@/config/auth'
 import { registerSchema } from '@/schemas/auth'
-import { setSessionTokenCookie } from '@/server/auth/cookie'
-import { createSession, generateSessionToken } from '@/server/auth/session'
+import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session'
 import { createUser, isEmailTaken } from '@/server/auth/user'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, setError, superValidate } from 'sveltekit-superforms'

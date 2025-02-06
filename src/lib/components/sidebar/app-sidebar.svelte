@@ -1,10 +1,11 @@
 <script lang="ts">
 	import NavUser from './nav-user.svelte'
 	import * as Sidebar from '@/components/ui/sidebar'
+	import type { UserWithoutSecrets } from '@/server/database'
 	import type { ComponentProps } from 'svelte'
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
-		user: User
+		user: UserWithoutSecrets
 	}
 
 	let { ref = $bindable(null), user, ...restProps }: Props = $props()

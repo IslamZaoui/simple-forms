@@ -1,6 +1,5 @@
 import { REDIRECT_GUEST_URL } from '@/config/auth'
-import { deleteSessionTokenCookie } from '@/server/auth/cookie'
-import { invalidateSession } from '@/server/auth/session'
+import { deleteSessionTokenCookie, invalidateSession } from '@/server/auth/session'
 import { redirect } from '@sveltejs/kit'
 import type { RequestHandler } from './$types'
 
