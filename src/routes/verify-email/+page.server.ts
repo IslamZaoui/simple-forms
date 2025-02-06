@@ -13,6 +13,7 @@ import { redirect } from 'sveltekit-flash-message/server'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
+import { invalidateUserPasswordResetSessions } from '@/server/auth/password-reset'
 
 export const load: PageServerLoad = async (event) => {
 	const session = event.locals.auth()
@@ -27,7 +28,7 @@ export const load: PageServerLoad = async (event) => {
 			redirect(302, REDIRECT_USER_URL)
 		}
 		request = await createEmailVerificationRequest(session.user.id, session.user.email)
-		sendVerificationEmail(request.email, request.code)
+		await sendVerificationEmail(request.email, request.code)
 		setEmailVerificationRequestCookie(event, request)
 	}
 
@@ -56,7 +57,7 @@ export const actions: Actions = {
 
 		if (Date.now() >= request.expiresAt.getTime()) {
 			request = await createEmailVerificationRequest(request.userId, request.email)
-			sendVerificationEmail(request.email, request.code)
+			await sendVerificationEmail(request.email, request.code)
 			return message(form, {
 				type: 'error',
 				message: 'Verification code has expired',
@@ -68,9 +69,10 @@ export const actions: Actions = {
 			return setError(form, 'code', 'Invalid code')
 		}
 
-		deleteUserEmailVerificationRequest(request.userId)
+		await deleteUserEmailVerificationRequest(request.userId)
+		await invalidateUserPasswordResetSessions(request.userId);
 		deleteEmailVerificationRequestCookie(event)
-		updateUserVerifiedEmail(request.userId, request.email)
+		await updateUserVerifiedEmail(request.userId, request.email)
 
 		redirect(
 			REDIRECT_USER_URL,
@@ -94,7 +96,7 @@ export const actions: Actions = {
 			request = await createEmailVerificationRequest(session.user.id, request.email)
 		}
 
-		sendVerificationEmail(request.email, request.code)
+		await sendVerificationEmail(request.email, request.code)
 		setEmailVerificationRequestCookie(event, request)
 
 		redirect(
