@@ -1,5 +1,5 @@
 import { RATE_LIMITER_SECRET } from '$env/static/private'
-import { redis } from '@/server/redis/upstash'
+import type { Redis } from '@upstash/redis'
 import { RetryAfterRateLimiter, type Rate } from 'sveltekit-rate-limiter/server'
 import { UpstashRedisRateLimiterStore } from './store'
 
@@ -15,7 +15,7 @@ export type RateLimiterCreatorOptions = {
 	preflight?: boolean
 }
 
-export function createRateLimiter(options: RateLimiterCreatorOptions) {
+export function createRateLimiter(redis: Redis, options: RateLimiterCreatorOptions) {
 	const { prefix, rates, preflight } = options
 
 	return new RetryAfterRateLimiter({

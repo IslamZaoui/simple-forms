@@ -11,20 +11,23 @@ import { invalidateUserPasswordResetSessions } from '@/server/auth/password-rese
 import { updateUserVerifiedEmail } from '@/server/auth/user'
 import { sendVerificationEmail } from '@/server/mail/email-verification'
 import { createRateLimiter } from '@/server/rate-limiter'
+import { redis } from '@/server/redis/upstash'
 import { formatSeconds } from '@/utils/time'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
 
-const limiter = createRateLimiter({
-	prefix: 'verify-email',
-	rates: {
-		IP: [5, '30m'],
-		cookie: [3, '30m']
-	},
-	preflight: true
-})
+const limiter = redis
+	? createRateLimiter(redis, {
+			prefix: 'verify-email',
+			rates: {
+				IP: [5, '30m'],
+				cookie: [3, '30m']
+			},
+			preflight: true
+		})
+	: undefined
 
 export const load: PageServerLoad = async (event) => {
 	const session = event.locals.auth()
@@ -43,7 +46,7 @@ export const load: PageServerLoad = async (event) => {
 		setEmailVerificationRequestCookie(event, request)
 	}
 
-	await limiter.cookieLimiter?.preflight(event)
+	await limiter?.cookieLimiter?.preflight(event)
 	return {
 		email: request.email,
 		form: await superValidate(event, zod(verifyEmailSchema))
@@ -66,19 +69,21 @@ export const actions: Actions = {
 			return fail(400, { form })
 		}
 
-		const state = await limiter.check(event)
-		if (state.limited) {
-			return message(
-				form,
-				{
-					type: 'error',
-					message: 'Too many requests',
-					description: `Try again in ${formatSeconds(state.retryAfter)}`
-				},
-				{
-					status: 429
-				}
-			)
+		if (limiter) {
+			const state = await limiter.check(event)
+			if (state.limited) {
+				return message(
+					form,
+					{
+						type: 'error',
+						message: 'Too many requests',
+						description: `Try again in ${formatSeconds(state.retryAfter)}`
+					},
+					{
+						status: 429
+					}
+				)
+			}
 		}
 
 		if (Date.now() >= request.expiresAt.getTime()) {

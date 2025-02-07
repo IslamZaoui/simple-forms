@@ -4,6 +4,7 @@ import {
 	validateSessionToken
 } from '@/server/auth/session'
 import { createRateLimiter } from '@/server/rate-limiter'
+import { redis } from '@/server/redis/upstash'
 import { error, type Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 
@@ -27,20 +28,24 @@ const authHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event)
 }
 
-const limiter = createRateLimiter({
-	prefix: 'global',
-	rates: {
-		IP: [100, 'm'],
-		IPUA: [60, 'm'],
-		cookie: [300, 'm']
-	},
-	preflight: false
-})
+const limiter = redis
+	? createRateLimiter(redis, {
+			prefix: 'global',
+			rates: {
+				IP: [100, 'm'],
+				IPUA: [60, 'm'],
+				cookie: [300, 'm']
+			},
+			preflight: false
+		})
+	: undefined
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
-	const state = await limiter.check(event)
-	if (state.limited) {
-		return error(429, `Too many requests, try again in ${state.retryAfter}s`)
+	if (limiter) {
+		const state = await limiter.check(event)
+		if (state.limited) {
+			return error(429, `Too many requests, try again in ${state.retryAfter}s`)
+		}
 	}
 	return resolve(event)
 }
