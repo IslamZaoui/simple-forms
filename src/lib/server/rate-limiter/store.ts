@@ -45,24 +45,3 @@ export class UpstashRedisRateLimiterStore implements RateLimiterStore {
 		await this.kv.clear()
 	}
 }
-
-export class UpstashRedisRetyAfterStore implements RateLimiterStore {
-	private kv: RateLimiterKV
-
-	constructor(redis: Redis, prefix: string) {
-		this.kv = RATE_LIMITER_KV(redis, prefix)
-	}
-
-	async add(hash: string, ttl: number): Promise<number> {
-		const currentRate = await this.kv.get(hash)
-		if (currentRate) return (await this.kv.get(hash)) ?? 0
-
-		const retryAfter = Date.now() + ttl
-		await this.kv.set(hash, retryAfter, ttl)
-		return retryAfter
-	}
-
-	async clear(): Promise<void> {
-		await this.kv.clear()
-	}
-}
