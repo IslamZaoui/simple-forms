@@ -42,13 +42,11 @@ export const actions: Actions = {
 		if (!requestSession) {
 			redirect(302, FORGOT_PASSWORD_URL)
 		}
-
 		if (!requestSession.emailVerified) {
 			redirect(302, RESET_PASSWORD_VERIFY_EMAIL_URL)
 		}
 
 		const form = await superValidate(event, zod(resetPasswordSchema))
-
 		if (!form.valid) {
 			return fail(400, { form })
 		}

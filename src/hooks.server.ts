@@ -3,12 +3,9 @@ import {
 	setSessionTokenCookie,
 	validateSessionToken
 } from '@/server/auth/session'
-import { type UserLimiterExtra, UserLimiterPlugin } from '@/server/rate-limiter/plugins'
-import { UpstashRedisRateLimiterStore } from '@/server/rate-limiter/store'
-import { redis } from '@/server/redis/upstash'
+import { createRateLimiter } from '@/server/rate-limiter'
 import { error, type Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-import { RateLimiter } from 'sveltekit-rate-limiter/server'
 
 const authHandle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('session') ?? null
@@ -30,16 +27,20 @@ const authHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event)
 }
 
-const limiter = new RateLimiter<UserLimiterExtra>({
-	IP: [60, 'm'],
-	IPUA: [20, 'm'],
-	plugins: [new UserLimiterPlugin([120, 'm'])],
-	store: redis ? new UpstashRedisRateLimiterStore(redis, 'global') : undefined
+const limiter = createRateLimiter({
+	prefix: 'global',
+	rates: {
+		IP: [100, 'm'],
+		IPUA: [60, 'm'],
+		cookie: [300, 'm']
+	},
+	preflight: false
 })
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
-	if (await limiter.isLimited(event, { userId: event.locals.auth()?.user.id })) {
-		return error(429, `Too many requests`)
+	const state = await limiter.check(event)
+	if (state.limited) {
+		return error(429, `Too many requests, try again in ${state.retryAfter}s`)
 	}
 	return resolve(event)
 }
