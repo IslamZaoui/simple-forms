@@ -51,6 +51,7 @@
 				/>
 			{/snippet}
 		</Form.Control>
+		<Form.FieldErrors />
 	</Form.Field>
 
 	<div class="flex items-center justify-between">

@@ -36,6 +36,6 @@ export const registerSchema = z
 
 export const loginSchema = z.object({
 	email,
-	password,
+	password: z.string({ required_error: 'Password is required' }),
 	rememberMe: z.boolean().default(false)
 })
