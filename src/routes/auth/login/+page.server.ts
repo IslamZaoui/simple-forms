@@ -3,27 +3,22 @@ import { loginSchema } from '@/schemas/auth'
 import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session'
 import { getValidUser } from '@/server/auth/user'
 import { createRateLimiter } from '@/server/rate-limiter'
-import { redis } from '@/server/redis/upstash'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
 
-const limiter = redis
-	? createRateLimiter(redis, {
-			prefix: 'login',
-			rates: {
-				IP: [10, 'm'],
-				cookie: [5, 'm']
-			},
-			preflight: true
-		})
-	: undefined
+const limiter = createRateLimiter({
+	prefix: 'login',
+	rates: {
+		IP: [10, 'm'],
+		IPUA: [5, 'm']
+	}
+})
 
 export const load: PageServerLoad = async (event) => {
 	await event.parent()
 
-	await limiter?.cookieLimiter?.preflight(event)
 	return {
 		form: await superValidate(zod(loginSchema))
 	}

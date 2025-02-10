@@ -9,28 +9,23 @@ import { generateSessionToken } from '@/server/auth/session'
 import { getUserByEmail } from '@/server/auth/user'
 import { sendPasswordResetEmail } from '@/server/mail/password-reset'
 import { createRateLimiter } from '@/server/rate-limiter'
-import { redis } from '@/server/redis/upstash'
 import { formatSeconds } from '@/utils/time'
 import { redirect } from '@sveltejs/kit'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
 
-const limiter = redis
-	? createRateLimiter(redis, {
-			prefix: 'register',
-			rates: {
-				IP: [5, '30m'],
-				cookie: [3, '30m']
-			},
-			preflight: true
-		})
-	: undefined
+const limiter = createRateLimiter({
+	prefix: 'register',
+	rates: {
+		IP: [5, '30m'],
+		IPUA: [3, '30m']
+	}
+})
 
 export const load: PageServerLoad = async (event) => {
 	const { user } = await event.parent()
 
-	await limiter?.cookieLimiter?.preflight(event)
 	return {
 		form: await superValidate(
 			zod(forgotPasswordSchema, {

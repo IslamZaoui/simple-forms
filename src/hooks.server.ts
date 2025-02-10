@@ -4,7 +4,6 @@ import {
 	validateSessionToken
 } from '@/server/auth/session'
 import { createRateLimiter } from '@/server/rate-limiter'
-import { redis } from '@/server/redis/upstash'
 import { error, type Handle } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 
@@ -28,17 +27,13 @@ const authHandle: Handle = async ({ event, resolve }) => {
 	return resolve(event)
 }
 
-const limiter = redis
-	? createRateLimiter(redis, {
-			prefix: 'global',
-			rates: {
-				IP: [100, 'm'],
-				IPUA: [60, 'm'],
-				cookie: [300, 'm']
-			},
-			preflight: false
-		})
-	: undefined
+const limiter = createRateLimiter({
+	prefix: 'global',
+	rates: {
+		IP: [120, 'm'],
+		IPUA: [60, 'm']
+	}
+})
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
 	if (limiter) {

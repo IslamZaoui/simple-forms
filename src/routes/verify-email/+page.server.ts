@@ -11,23 +11,19 @@ import { invalidateUserPasswordResetSessions } from '@/server/auth/password-rese
 import { updateUserVerifiedEmail } from '@/server/auth/user'
 import { sendVerificationEmail } from '@/server/mail/email-verification'
 import { createRateLimiter } from '@/server/rate-limiter'
-import { redis } from '@/server/redis/upstash'
 import { formatSeconds } from '@/utils/time'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
 
-const limiter = redis
-	? createRateLimiter(redis, {
-			prefix: 'verify-email',
-			rates: {
-				IP: [5, '30m'],
-				cookie: [3, '30m']
-			},
-			preflight: true
-		})
-	: undefined
+const limiter = createRateLimiter({
+	prefix: 'verify-email',
+	rates: {
+		IP: [5, '30m'],
+		IPUA: [3, '30m']
+	}
+})
 
 export const load: PageServerLoad = async (event) => {
 	const session = event.locals.auth()
@@ -46,7 +42,6 @@ export const load: PageServerLoad = async (event) => {
 		setEmailVerificationRequestCookie(event, request)
 	}
 
-	await limiter?.cookieLimiter?.preflight(event)
 	return {
 		email: request.email,
 		form: await superValidate(event, zod(verifyEmailSchema))

@@ -3,22 +3,18 @@ import { registerSchema } from '@/schemas/auth'
 import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session'
 import { createUser, isEmailTaken } from '@/server/auth/user'
 import { createRateLimiter } from '@/server/rate-limiter'
-import { redis } from '@/server/redis/upstash'
 import { redirect } from 'sveltekit-flash-message/server'
 import { fail, message, setError, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad } from './$types'
 
-const limiter = redis
-	? createRateLimiter(redis, {
-			prefix: 'register',
-			rates: {
-				IP: [5, 'm'],
-				cookie: [3, 'm']
-			},
-			preflight: true
-		})
-	: undefined
+const limiter = createRateLimiter({
+	prefix: 'register',
+	rates: {
+		IP: [5, 'm'],
+		IPUA: [3, 'm']
+	}
+})
 
 export const load: PageServerLoad = async (event) => {
 	await event.parent()
@@ -26,7 +22,6 @@ export const load: PageServerLoad = async (event) => {
 	const email = event.cookies.get('email') ?? null
 	event.cookies.delete('email', { path: '/' })
 
-	await limiter?.cookieLimiter?.preflight(event)
 	return {
 		form: await superValidate(zod(registerSchema), {
 			defaults: {
