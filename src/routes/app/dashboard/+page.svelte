@@ -3,7 +3,7 @@
 
 	let { data } = $props()
 
-	let links: Link[] = [
+	const links: Link[] = [
 		{
 			label: 'App'
 		}

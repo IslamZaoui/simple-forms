@@ -3,6 +3,8 @@
 	import * as Sidebar from '@/components/ui/sidebar'
 	import type { UserWithoutSecrets } from '@/server/database'
 	import type { ComponentProps } from 'svelte'
+	import { ReusableSidebarGroup } from './sidebar-group'
+	import { userSpaceItems } from './groups'
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
 		user: UserWithoutSecrets
@@ -27,7 +29,7 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<!-- Main navigation -->
+		<ReusableSidebarGroup label="Application" items={userSpaceItems} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser {user} />
