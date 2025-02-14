@@ -3,16 +3,33 @@
 	import * as Sidebar from '@/components/ui/sidebar'
 	import type { UserWithoutSecrets } from '@/server/database'
 	import type { ComponentProps } from 'svelte'
-	import { ReusableSidebarGroup } from '../sidebar-group'
-	import { userSpaceItems } from './groups'
+	import { ReusableSidebarGroup, type SidebarGroupItem } from '../sidebar-group'
+	import { getUserFormTemplatesItems, userSpaceItems } from './groups'
 	import PlusIcon from 'lucide-svelte/icons/plus'
 	import { FormTemplateDialog } from '@/components/dialogs'
+	import type { FormTemplate } from '@prisma/client'
+	import EllipsisIcon from 'lucide-svelte/icons/ellipsis'
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
 		user: UserWithoutSecrets
+		getLatestTemplates: Promise<FormTemplate[]>
 	}
 
-	let { ref = $bindable(null), user, ...restProps }: Props = $props()
+	let userFormTemplatesItems = $state<SidebarGroupItem[]>([
+		{
+			title: 'See more...',
+			url: '/app/form-templates'
+		}
+	])
+
+	$effect(() => {
+		getLatestTemplates.then((templates) => {
+			const temp = getUserFormTemplatesItems(templates)
+			userFormTemplatesItems = [...temp, ...userFormTemplatesItems]
+		})
+	})
+
+	let { ref = $bindable(null), user, getLatestTemplates, ...restProps }: Props = $props()
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -32,7 +49,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<ReusableSidebarGroup label="Application" pages={userSpaceItems} />
-		<ReusableSidebarGroup label="Form Templates" pages={[]}>
+		<ReusableSidebarGroup label="Form Templates" pages={userFormTemplatesItems}>
 			{#snippet action()}
 				<FormTemplateDialog>
 					{#snippet trigger({ props })}
@@ -41,6 +58,13 @@
 						</Sidebar.GroupAction>
 					{/snippet}
 				</FormTemplateDialog>
+			{/snippet}
+
+			{#snippet menu()}
+				<Sidebar.MenuAction>
+					<EllipsisIcon />
+					<span class="sr-only">Add Project</span>
+				</Sidebar.MenuAction>
 			{/snippet}
 		</ReusableSidebarGroup>
 	</Sidebar.Content>

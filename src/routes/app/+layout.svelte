@@ -6,6 +6,6 @@
 </script>
 
 <SidebarProvider>
-	<AppSidebar user={data.user} />
+	<AppSidebar user={data.user} getLatestTemplates={data.getLatestTemplates} />
 	{@render children()}
 </SidebarProvider>

@@ -7,9 +7,10 @@
 		label: string
 		pages: SidebarGroupItem[]
 		action?: Snippet
+		menu?: Snippet
 	}
 
-	let { label, pages, action }: Props = $props()
+	let { label, pages, action, menu }: Props = $props()
 </script>
 
 <Sidebar.Group>
@@ -17,7 +18,7 @@
 		<Sidebar.GroupLabel class="text-muted-foreground">{label}</Sidebar.GroupLabel>
 		{@render action?.()}
 		<Sidebar.Menu>
-			{#each pages as { title, url, Icon } (url)}
+			{#each pages as { title, url, Icon, hasAction } (url)}
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton>
 						{#snippet child({ props })}
@@ -29,6 +30,9 @@
 							</a>
 						{/snippet}
 					</Sidebar.MenuButton>
+					{#if hasAction && menu}
+						{@render menu()}
+					{/if}
 				</Sidebar.MenuItem>
 			{/each}
 		</Sidebar.Menu>
