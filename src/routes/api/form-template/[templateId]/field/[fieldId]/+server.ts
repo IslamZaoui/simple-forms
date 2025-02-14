@@ -1,9 +1,18 @@
 import { REDIRECT_GUEST_URL } from '@/config/auth'
 import { updateFormTemplateFieldSchema } from '@/schemas/form-template'
 import { prisma } from '@/server/database'
+import { createRateLimiter } from '@/server/rate-limiter'
 import { actionResult, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { RequestHandler } from './$types'
+
+const limiter = createRateLimiter({
+	prefix: 'update-form-template-field',
+	rates: {
+		IP: [30, 'm'],
+		IPUA: [15, 'm']
+	}
+})
 
 export const POST: RequestHandler = async (event) => {
 	const session = event.locals.auth()
@@ -11,8 +20,18 @@ export const POST: RequestHandler = async (event) => {
 		return actionResult('redirect', REDIRECT_GUEST_URL)
 	}
 
-	const { templateId, fieldId } = event.params
+	const status = await limiter.check(event)
+	if (status.limited) {
+		return actionResult('failure', {
+			message: {
+				type: 'error',
+				message: 'Too many requests',
+				description: `Try again in ${status.retryAfter}s`
+			}
+		})
+	}
 
+	const { templateId, fieldId } = event.params
 	const template = await prisma.formTemplate.findUnique({
 		where: {
 			id: templateId,
