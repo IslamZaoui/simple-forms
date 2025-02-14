@@ -15,21 +15,20 @@
 		getLatestTemplates: Promise<FormTemplate[]>
 	}
 
-	let userFormTemplatesItems = $state<SidebarGroupItem[]>([
-		{
-			title: 'See more...',
-			url: '/app/form-templates'
-		}
-	])
+	const seeAll = {
+		title: 'See all templates',
+		url: '/app/form-templates'
+	}
+	let userFormTemplatesItems = $state<SidebarGroupItem[]>([seeAll])
+
+	let { ref = $bindable(null), user, getLatestTemplates, ...restProps }: Props = $props()
 
 	$effect(() => {
 		getLatestTemplates.then((templates) => {
 			const temp = getUserFormTemplatesItems(templates)
-			userFormTemplatesItems = [...temp, ...userFormTemplatesItems]
+			userFormTemplatesItems = [...temp, seeAll]
 		})
 	})
-
-	let { ref = $bindable(null), user, getLatestTemplates, ...restProps }: Props = $props()
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>

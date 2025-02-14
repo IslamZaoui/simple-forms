@@ -14,15 +14,17 @@
 <PageWrapper {links}>
 	<div class="h-full rounded-md bg-muted/50 p-4">
 		{#await data.getTemplates then templates}
-			<li class="ml-4">
+			<lo>
 				{#each templates as template (template.id)}
-					<lo>
+					<li class="ml-4">
 						<a class="hover:underline" href="/app/form-templates/{template.id}">
 							{template.title}
 						</a>
-					</lo>
+					</li>
+				{:else}
+					No templates found
 				{/each}
-			</li>
+			</lo>
 		{/await}
 	</div>
 </PageWrapper>

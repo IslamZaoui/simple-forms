@@ -7,6 +7,9 @@ export const load = (async (event) => {
 	const getTemplates = prisma.formTemplate.findMany({
 		where: {
 			userId: user.id
+		},
+		orderBy: {
+			createdAt: 'desc'
 		}
 	})
 

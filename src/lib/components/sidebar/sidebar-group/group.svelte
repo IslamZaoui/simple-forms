@@ -18,7 +18,7 @@
 		<Sidebar.GroupLabel class="text-muted-foreground">{label}</Sidebar.GroupLabel>
 		{@render action?.()}
 		<Sidebar.Menu>
-			{#each pages as { title, url, Icon, hasAction } (url)}
+			{#each pages as { title, url, Icon, hasAction }}
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton>
 						{#snippet child({ props })}
