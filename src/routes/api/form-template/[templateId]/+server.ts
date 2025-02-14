@@ -57,8 +57,6 @@ export const POST: RequestHandler = async (event) => {
 		return actionResult('failure', { form })
 	}
 
-	console.log(form.data)
-
 	await prisma.formTemplate.update({
 		where: {
 			id: templateId

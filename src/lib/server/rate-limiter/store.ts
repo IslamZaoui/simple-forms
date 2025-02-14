@@ -35,7 +35,6 @@ export class UpstashRedisRateLimiterStore implements RateLimiterStore {
 	}
 
 	async add(hash: string, ttl: number): Promise<number> {
-		console.log('add', hash, ttl)
 		const currentRate = (await this.kv.get(hash)) ?? 0
 		await this.kv.set(hash, currentRate + 1, ttl)
 		return currentRate + 1
