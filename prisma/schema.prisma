@@ -17,6 +17,7 @@ model User {
 
   sessions                 Session[]
   passwordResetSessions    PasswordResetSession[]
+  FormTemplate             FormTemplate[]
   emailVerificationRequest EmailVerificationRequest?
 
   createdAt DateTime @default(now())
@@ -50,4 +51,42 @@ model PasswordResetSession {
   expiresAt     DateTime
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model FormTemplate {
+  id        String  @id @default(nanoid())
+  userId    String
+  title     String
+  slug      String  @unique
+  details   String?
+  published Boolean @default(false)
+
+  fields FormTemplateField[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model FormTemplateField {
+  id          String                @id @default(nanoid())
+  templateId  String
+  order       Int
+  label       String
+  required    Boolean
+  description String?
+  placeholder String?
+  type        FormTemplateFieldType
+  min         Int?
+  max         Int?
+
+  formTemplate FormTemplate @relation(references: [id], fields: [templateId], onDelete: Cascade)
+}
+
+enum FormTemplateFieldType {
+  text
+  textarea
+  email
+  number
 }

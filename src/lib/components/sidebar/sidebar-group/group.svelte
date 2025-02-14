@@ -1,20 +1,23 @@
 <script lang="ts">
 	import * as Sidebar from '@/components/ui/sidebar'
 	import type { SidebarGroupItem } from '.'
+	import type { Snippet } from 'svelte'
 
 	interface Props {
 		label: string
-		items: SidebarGroupItem[]
+		pages: SidebarGroupItem[]
+		action?: Snippet
 	}
 
-	let { label, items }: Props = $props()
+	let { label, pages, action }: Props = $props()
 </script>
 
 <Sidebar.Group>
 	<Sidebar.GroupContent>
 		<Sidebar.GroupLabel class="text-muted-foreground">{label}</Sidebar.GroupLabel>
+		{@render action?.()}
 		<Sidebar.Menu>
-			{#each items as { title, url, Icon } (url)}
+			{#each pages as { title, url, Icon } (url)}
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton>
 						{#snippet child({ props })}

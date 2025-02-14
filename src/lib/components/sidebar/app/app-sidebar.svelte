@@ -1,10 +1,12 @@
 <script lang="ts">
-	import NavUser from './nav-user.svelte'
+	import { NavUser } from '../navs'
 	import * as Sidebar from '@/components/ui/sidebar'
 	import type { UserWithoutSecrets } from '@/server/database'
 	import type { ComponentProps } from 'svelte'
-	import { ReusableSidebarGroup } from './sidebar-group'
+	import { ReusableSidebarGroup } from '../sidebar-group'
 	import { userSpaceItems } from './groups'
+	import PlusIcon from 'lucide-svelte/icons/plus'
+	import { FormTemplateDialog } from '@/components/dialogs'
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
 		user: UserWithoutSecrets
@@ -29,7 +31,18 @@
 		</Sidebar.Menu>
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<ReusableSidebarGroup label="Application" items={userSpaceItems} />
+		<ReusableSidebarGroup label="Application" pages={userSpaceItems} />
+		<ReusableSidebarGroup label="Form Templates" pages={[]}>
+			{#snippet action()}
+				<FormTemplateDialog>
+					{#snippet trigger({ props })}
+						<Sidebar.GroupAction {...props} title="Add Project">
+							<PlusIcon /> <span class="sr-only">Add Form</span>
+						</Sidebar.GroupAction>
+					{/snippet}
+				</FormTemplateDialog>
+			{/snippet}
+		</ReusableSidebarGroup>
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser {user} />

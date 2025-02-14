@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PageWrapper, type Link } from '@/components/sidebar'
+	import { type Link, PageWrapper } from '@/components/sidebar/page-slot'
 
 	let { data } = $props()
 
