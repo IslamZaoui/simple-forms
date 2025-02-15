@@ -1,13 +1,13 @@
-import type { Redis } from '@upstash/redis'
-import type { RateLimiterStore } from 'sveltekit-rate-limiter/server'
+import type { Redis } from '@upstash/redis';
+import type { RateLimiterStore } from 'sveltekit-rate-limiter/server';
 
 function RATE_LIMITER_KV(redis: Redis, prefix: string = 'default') {
 	function generateKey(hash: string) {
-		return `rate-limiter:${prefix}:${hash}`
+		return `rate-limiter:${prefix}:${hash}`;
 	}
 
 	function getAllKeys() {
-		return redis.keys(`rate-limiter:${prefix}:*`)
+		return redis.keys(`rate-limiter:${prefix}:*`);
 	}
 
 	return {
@@ -17,30 +17,30 @@ function RATE_LIMITER_KV(redis: Redis, prefix: string = 'default') {
 				px: ttl
 			}),
 		clear: async () => {
-			const keys = await getAllKeys()
+			const keys = await getAllKeys();
 			if (keys.length > 0) {
-				await redis.del(...keys)
+				await redis.del(...keys);
 			}
 		}
-	}
+	};
 }
 
-type RateLimiterKV = ReturnType<typeof RATE_LIMITER_KV>
+type RateLimiterKV = ReturnType<typeof RATE_LIMITER_KV>;
 
 export class UpstashRedisRateLimiterStore implements RateLimiterStore {
-	private kv: RateLimiterKV
+	private kv: RateLimiterKV;
 
 	constructor(redis: Redis, prefix: string) {
-		this.kv = RATE_LIMITER_KV(redis, prefix)
+		this.kv = RATE_LIMITER_KV(redis, prefix);
 	}
 
 	async add(hash: string, ttl: number): Promise<number> {
-		const currentRate = (await this.kv.get(hash)) ?? 0
-		await this.kv.set(hash, currentRate + 1, ttl)
-		return currentRate + 1
+		const currentRate = (await this.kv.get(hash)) ?? 0;
+		await this.kv.set(hash, currentRate + 1, ttl);
+		return currentRate + 1;
 	}
 
 	async clear(): Promise<void> {
-		await this.kv.clear()
+		await this.kv.clear();
 	}
 }

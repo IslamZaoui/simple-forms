@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { type Link, PageWrapper } from '@/components/sidebar/page-slot'
+	import { type Link, PageWrapper } from '@/components/sidebar/page-slot';
 
-	let { data } = $props()
+	let { data } = $props();
 
 	const links: Link[] = [
 		{
 			label: 'App'
 		}
-	]
+	];
 </script>
 
 <PageWrapper {links}>

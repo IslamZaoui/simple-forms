@@ -1,10 +1,10 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth'
-import { updateFormTemplateFieldSchema } from '@/schemas/form-template'
-import { prisma } from '@/server/database'
-import { createRateLimiter } from '@/server/rate-limiter'
-import { actionResult, superValidate } from 'sveltekit-superforms'
-import { zod } from 'sveltekit-superforms/adapters'
-import type { RequestHandler } from './$types'
+import { REDIRECT_GUEST_URL } from '@/config/auth';
+import { updateFormTemplateFieldSchema } from '@/schemas/form-template';
+import { prisma } from '@/server/database';
+import { createRateLimiter } from '@/server/rate-limiter';
+import { actionResult, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { RequestHandler } from './$types';
 
 const limiter = createRateLimiter({
 	prefix: 'update-form-template-field',
@@ -12,15 +12,15 @@ const limiter = createRateLimiter({
 		IP: [30, 'm'],
 		IPUA: [15, 'm']
 	}
-})
+});
 
 export const POST: RequestHandler = async (event) => {
-	const session = event.locals.auth()
+	const session = event.locals.auth();
 	if (!session) {
-		return actionResult('redirect', REDIRECT_GUEST_URL)
+		return actionResult('redirect', REDIRECT_GUEST_URL);
 	}
 
-	const status = await limiter.check(event)
+	const status = await limiter.check(event);
 	if (status.limited) {
 		return actionResult('failure', {
 			message: {
@@ -28,10 +28,10 @@ export const POST: RequestHandler = async (event) => {
 				message: 'Too many requests',
 				description: `Try again in ${status.retryAfter}s`
 			}
-		})
+		});
 	}
 
-	const { templateId, fieldId } = event.params
+	const { templateId, fieldId } = event.params;
 	const template = await prisma.formTemplate.findUnique({
 		where: {
 			id: templateId,
@@ -40,7 +40,7 @@ export const POST: RequestHandler = async (event) => {
 		select: {
 			id: true
 		}
-	})
+	});
 	if (!template) {
 		return actionResult('redirect', '/app/form-templates', {
 			message: {
@@ -50,7 +50,7 @@ export const POST: RequestHandler = async (event) => {
 			cookieOptions: {
 				sameSite: 'Lax'
 			}
-		})
+		});
 	}
 
 	const field = await prisma.formTemplateField.findUnique({
@@ -60,7 +60,7 @@ export const POST: RequestHandler = async (event) => {
 		select: {
 			id: true
 		}
-	})
+	});
 	if (!field) {
 		return actionResult('redirect', `/app/form-templates/${templateId}`, {
 			message: {
@@ -70,12 +70,12 @@ export const POST: RequestHandler = async (event) => {
 			cookieOptions: {
 				sameSite: 'Lax'
 			}
-		})
+		});
 	}
 
-	const form = await superValidate(event, zod(updateFormTemplateFieldSchema))
+	const form = await superValidate(event, zod(updateFormTemplateFieldSchema));
 	if (!form.valid) {
-		return actionResult('failure', { form })
+		return actionResult('failure', { form });
 	}
 
 	await prisma.formTemplateField.update({
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async (event) => {
 			id: fieldId
 		},
 		data: form.data
-	})
+	});
 
 	return actionResult('redirect', `/app/form-templates/${templateId}`, {
 		message: {
@@ -93,5 +93,5 @@ export const POST: RequestHandler = async (event) => {
 		cookieOptions: {
 			sameSite: 'Lax'
 		}
-	})
-}
+	});
+};

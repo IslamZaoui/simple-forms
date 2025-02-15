@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { DeleteAccountForm, EmailForm, NameForm, PasswordForm } from '@/components/forms/settings'
-	import type { Link } from '@/components/sidebar/page-slot'
-	import PageWrapper from '@/components/sidebar/page-slot/page-wrapper.svelte'
-	import * as Tabs from '@/components/ui/tabs'
+	import { DeleteAccountForm, EmailForm, NameForm, PasswordForm } from '@/components/forms/settings';
+	import type { Link } from '@/components/sidebar/page-slot';
+	import PageWrapper from '@/components/sidebar/page-slot/page-wrapper.svelte';
+	import * as Tabs from '@/components/ui/tabs';
 
-	let { data } = $props()
+	let { data } = $props();
 
 	const links: Link[] = [
 		{
 			label: 'Account settings'
 		}
-	]
+	];
 </script>
 
 <PageWrapper {links}>

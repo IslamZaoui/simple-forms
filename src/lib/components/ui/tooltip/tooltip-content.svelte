@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Tooltip as TooltipPrimitive } from 'bits-ui'
-	import { cn } from '@/utils/cn.js'
+	import { Tooltip as TooltipPrimitive } from 'bits-ui';
+	import { cn } from '@/utils/cn.js';
 
 	let {
 		ref = $bindable(null),
 		class: className,
 		sideOffset = 4,
 		...restProps
-	}: TooltipPrimitive.ContentProps = $props()
+	}: TooltipPrimitive.ContentProps = $props();
 </script>
 
 <TooltipPrimitive.Content

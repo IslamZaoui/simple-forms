@@ -1,15 +1,15 @@
 <script lang="ts">
-	import * as AlertDialog from '@/components/ui/alert-dialog'
-	import TrashIcon from 'lucide-svelte/icons/trash'
-	import { Button } from '@/components/ui/button'
-	import type { FormTemplateField } from '@prisma/client'
-	import { enhance } from '$app/forms'
+	import * as AlertDialog from '@/components/ui/alert-dialog';
+	import TrashIcon from 'lucide-svelte/icons/trash';
+	import { Button } from '@/components/ui/button';
+	import type { FormTemplateField } from '@prisma/client';
+	import { enhance } from '$app/forms';
 
 	type Props = {
-		field: FormTemplateField
-	}
+		field: FormTemplateField;
+	};
 
-	let { field }: Props = $props()
+	let { field }: Props = $props();
 </script>
 
 <AlertDialog.Root>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '@/utils/cn.js'
-	import type { WithElementRef } from 'bits-ui'
-	import type { Snippet } from 'svelte'
-	import type { HTMLButtonAttributes } from 'svelte/elements'
+	import { cn } from '@/utils/cn.js';
+	import type { WithElementRef } from 'bits-ui';
+	import type { Snippet } from 'svelte';
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -12,9 +12,9 @@
 		child,
 		...restProps
 	}: WithElementRef<HTMLButtonAttributes> & {
-		child?: Snippet<[{ props: Record<string, unknown> }]>
-		showOnHover?: boolean
-	} = $props()
+		child?: Snippet<[{ props: Record<string, unknown> }]>;
+		showOnHover?: boolean;
+	} = $props();
 
 	const mergedProps = $derived({
 		class: cn(
@@ -31,7 +31,7 @@
 		),
 		'data-sidebar': 'menu-action',
 		...restProps
-	})
+	});
 </script>
 
 {#if child}

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import * as AlertDialog from '@/components/ui/alert-dialog'
-	import { Button } from '@/components/ui/button'
-	import { enhance } from '$app/forms'
-	import type { Snippet } from 'svelte'
+	import * as AlertDialog from '@/components/ui/alert-dialog';
+	import { Button } from '@/components/ui/button';
+	import { enhance } from '$app/forms';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		trigger: Snippet<[{ props: Record<string, unknown> }]>
+		trigger: Snippet<[{ props: Record<string, unknown> }]>;
 	}
 
-	let { trigger }: Props = $props()
+	let { trigger }: Props = $props();
 </script>
 
 <AlertDialog.Root>

@@ -1,30 +1,28 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { Input } from '@/components/ui/input'
-	import { PasswordInput } from '@/components/ui/password-input'
-	import { registerSchema } from '@/schemas/auth'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import Separator from '@/components/ui/separator/separator.svelte'
-	import PasswordValidation, {
-		type PasswordError
-	} from '@/components/forms/auth/password-validation.svelte'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { LOGIN_URL } from '@/config/auth'
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import { PasswordInput } from '@/components/ui/password-input';
+	import { registerSchema } from '@/schemas/auth';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import Separator from '@/components/ui/separator/separator.svelte';
+	import PasswordValidation, { type PasswordError } from '@/components/forms/auth/password-validation.svelte';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { LOGIN_URL } from '@/config/auth';
 
-	let { data }: { data: { form: SuperValidated<Infer<typeof registerSchema>> } } = $props()
+	let { data }: { data: { form: SuperValidated<Infer<typeof registerSchema>> } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(registerSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, allErrors, message } = form
+	const { form: formData, enhance, delayed, allErrors, message } = form;
 
 	const passwordError: PasswordError | undefined = $derived.by(() => {
-		const passwordRelated = $allErrors.filter((error) => error.path === 'password')
-		return passwordRelated.length > 0 ? passwordRelated[0] : undefined
-	})
+		const passwordRelated = $allErrors.filter((error) => error.path === 'password');
+		return passwordRelated.length > 0 ? passwordRelated[0] : undefined;
+	});
 </script>
 
 <form class="mx-auto w-full max-w-md space-y-5 py-1" method="POST" use:enhance>
@@ -34,13 +32,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Name</Form.Label>
-				<Input
-					type="text"
-					placeholder="example..."
-					autocomplete="name"
-					{...props}
-					bind:value={$formData.name}
-				/>
+				<Input type="text" placeholder="example..." autocomplete="name" {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

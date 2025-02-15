@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { updateFormTemplateFieldSchema } from '@/schemas/form-template'
-	import * as Form from '@/components/ui/form'
-	import { defaults, superForm } from 'sveltekit-superforms'
-	import { zod } from 'sveltekit-superforms/adapters'
-	import { Separator } from '@/components/ui/separator'
-	import { Input } from '@/components/ui/input'
-	import type { FormTemplateField } from '@prisma/client'
-	import MessageAlert from '../message-alert.svelte'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import { Checkbox } from '@/components/ui/checkbox'
+	import { updateFormTemplateFieldSchema } from '@/schemas/form-template';
+	import * as Form from '@/components/ui/form';
+	import { defaults, superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { Separator } from '@/components/ui/separator';
+	import { Input } from '@/components/ui/input';
+	import type { FormTemplateField } from '@prisma/client';
+	import MessageAlert from '../message-alert.svelte';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import { Checkbox } from '@/components/ui/checkbox';
 
 	type Props = {
-		field: FormTemplateField
-	}
+		field: FormTemplateField;
+	};
 
-	let { field }: Props = $props()
+	let { field }: Props = $props();
 
 	const form = superForm(
 		defaults(zod(updateFormTemplateFieldSchema), {
@@ -30,17 +30,12 @@
 		{
 			validators: zod(updateFormTemplateFieldSchema)
 		}
-	)
+	);
 
-	let { form: formData, enhance, delayed, message } = form
+	let { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form
-	class="space-y-2 py-4"
-	action="/api/form-template/{field.templateId}/field/{field.id}"
-	use:enhance
-	method="post"
->
+<form class="space-y-2 py-4" action="/api/form-template/{field.templateId}/field/{field.id}" use:enhance method="post">
 	<MessageAlert {message} />
 
 	<div class="relative">
@@ -66,22 +61,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Description</Form.Label>
-				<Input
-					type="text"
-					placeholder="description..."
-					{...props}
-					bind:value={$formData.description}
-				/>
+				<Input type="text" placeholder="description..." {...props} bind:value={$formData.description} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Field
-		{form}
-		name="required"
-		class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4"
-	>
+	<Form.Field {form} name="required" class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
 		<Form.Control>
 			{#snippet children({ props })}
 				<Checkbox {...props} bind:checked={$formData.required} />
@@ -106,12 +92,7 @@
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Placeholder</Form.Label>
-					<Input
-						type="text"
-						placeholder="placeholder..."
-						{...props}
-						bind:value={$formData.placeholder}
-					/>
+					<Input type="text" placeholder="placeholder..." {...props} bind:value={$formData.placeholder} />
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />

@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { formTemplateSchema } from '@/schemas/form-template'
-	import { defaults, superForm } from 'sveltekit-superforms'
-	import { zod } from 'sveltekit-superforms/adapters'
-	import MessageAlert from '../message-alert.svelte'
-	import * as Form from '@/components/ui/form'
-	import { Input } from '@/components/ui/input'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import { Textarea } from '@/components/ui/textarea'
-	import type { FormTemplate } from '@prisma/client'
+	import { formTemplateSchema } from '@/schemas/form-template';
+	import { defaults, superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import MessageAlert from '../message-alert.svelte';
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import { Textarea } from '@/components/ui/textarea';
+	import type { FormTemplate } from '@prisma/client';
 
 	interface Props {
-		data?: FormTemplate
+		data?: FormTemplate;
 	}
 
-	let { data }: Props = $props()
+	let { data }: Props = $props();
 
 	const defaultForm = defaults(zod(formTemplateSchema), {
 		defaults: {
@@ -21,15 +21,15 @@
 			slug: data?.slug ?? '',
 			details: data?.details ?? undefined
 		}
-	})
+	});
 
 	const form = superForm(defaultForm, {
 		validators: zod(formTemplateSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 
-	const url = !data ? '/api/form-template' : `/api/form-template/${data.id}`
+	const url = !data ? '/api/form-template' : `/api/form-template/${data.id}`;
 </script>
 
 <form class="mx-auto w-full max-w-md space-y-5 py-1" method="POST" action={url} use:enhance>

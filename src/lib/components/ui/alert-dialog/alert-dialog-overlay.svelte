@@ -1,12 +1,8 @@
 <script lang="ts">
-	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui'
-	import { cn } from '@/utils/cn.js'
+	import { AlertDialog as AlertDialogPrimitive } from 'bits-ui';
+	import { cn } from '@/utils/cn.js';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: AlertDialogPrimitive.OverlayProps = $props()
+	let { ref = $bindable(null), class: className, ...restProps }: AlertDialogPrimitive.OverlayProps = $props();
 </script>
 
 <AlertDialogPrimitive.Overlay

@@ -1,8 +1,8 @@
 export type SidebarGroupItem = {
-	title: string
-	url: string
-	Icon?: ConstructorOfATypedSvelteComponent
-	hasAction?: boolean
-}
+	title: string;
+	url: string;
+	Icon?: ConstructorOfATypedSvelteComponent;
+	hasAction?: boolean;
+};
 
-export { default as ReusableSidebarGroup } from './group.svelte'
+export { default as ReusableSidebarGroup } from './group.svelte';

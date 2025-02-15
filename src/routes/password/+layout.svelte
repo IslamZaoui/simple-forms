@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Button } from '@/components/ui/button'
-	import { LOGIN_URL, REDIRECT_USER_URL } from '@/config/auth'
+	import { Button } from '@/components/ui/button';
+	import { LOGIN_URL, REDIRECT_USER_URL } from '@/config/auth';
 
-	let { data, children } = $props()
+	let { data, children } = $props();
 </script>
 
 <div class="dots-background"></div>

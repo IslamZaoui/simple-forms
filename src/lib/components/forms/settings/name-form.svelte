@@ -1,33 +1,31 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { Input } from '@/components/ui/input'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zod } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { changeNameSchema } from '@/schemas/settings'
-	import { Separator } from '@/components/ui/separator'
-	import type { UserWithoutSecrets } from '@/server/database'
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { changeNameSchema } from '@/schemas/settings';
+	import { Separator } from '@/components/ui/separator';
+	import type { UserWithoutSecrets } from '@/server/database';
 
 	type Props = {
 		data: {
-			changeNameForm: SuperValidated<Infer<typeof changeNameSchema>>
-			user: UserWithoutSecrets
-		}
-	}
+			changeNameForm: SuperValidated<Infer<typeof changeNameSchema>>;
+			user: UserWithoutSecrets;
+		};
+	};
 
-	let { data }: Props = $props()
+	let { data }: Props = $props();
 
 	const form = superForm(data.changeNameForm, {
 		validators: zod(changeNameSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form
-	class="flex flex-col rounded-md border border-muted bg-muted/50"
->
+<form class="flex flex-col rounded-md border border-muted bg-muted/50">
 	<div class="p-4">
 		<Form.Field {form} name="name">
 			<Form.Control>

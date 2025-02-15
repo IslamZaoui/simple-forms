@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Skeleton } from '@/components/ui/skeleton/index.js'
-	import { cn } from '@/utils/cn.js'
-	import type { WithElementRef } from 'bits-ui'
-	import type { HTMLAttributes } from 'svelte/elements'
+	import { Skeleton } from '@/components/ui/skeleton/index.js';
+	import { cn } from '@/utils/cn.js';
+	import type { WithElementRef } from 'bits-ui';
+	import type { HTMLAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -11,11 +11,11 @@
 		children,
 		...restProps
 	}: WithElementRef<HTMLAttributes<HTMLElement>> & {
-		showIcon?: boolean
-	} = $props()
+		showIcon?: boolean;
+	} = $props();
 
 	// Random width between 50% and 90%
-	const width = `${Math.floor(Math.random() * 40) + 50}%`
+	const width = `${Math.floor(Math.random() * 40) + 50}%`;
 </script>
 
 <div

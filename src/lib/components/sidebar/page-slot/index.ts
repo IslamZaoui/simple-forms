@@ -1,2 +1,2 @@
-export type { Link } from './page-breadcrumb.svelte'
-export { default as PageWrapper } from './page-wrapper.svelte'
+export type { Link } from './page-breadcrumb.svelte';
+export { default as PageWrapper } from './page-wrapper.svelte';

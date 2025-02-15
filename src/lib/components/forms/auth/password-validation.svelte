@@ -1,19 +1,19 @@
 <script lang="ts" module>
 	export type PasswordError = {
-		path: string
-		messages: string[]
-	}
+		path: string;
+		messages: string[];
+	};
 </script>
 
 <script lang="ts">
-	import { Alert, AlertDescription } from '@/components/ui/alert'
+	import { Alert, AlertDescription } from '@/components/ui/alert';
 
 	interface Props {
-		passwordError: PasswordError | undefined
+		passwordError: PasswordError | undefined;
 	}
 
-	let { passwordError }: Props = $props()
-	const isValid = $derived(!passwordError || passwordError.messages.length === 0)
+	let { passwordError }: Props = $props();
+	const isValid = $derived(!passwordError || passwordError.messages.length === 0);
 </script>
 
 <Alert variant={isValid ? 'default' : 'destructive'} class="p-2">

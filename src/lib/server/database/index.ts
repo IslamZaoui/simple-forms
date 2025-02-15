@@ -1,7 +1,7 @@
-import { dev } from '$app/environment'
-import { PrismaClient, type User } from '@prisma/client'
+import { dev } from '$app/environment';
+import { PrismaClient, type User } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 export const prisma =
 	globalForPrisma.prisma ||
@@ -12,8 +12,8 @@ export const prisma =
 				passwordHash: true
 			}
 		}
-	})
+	});
 
-if (dev) globalForPrisma.prisma = prisma
+if (dev) globalForPrisma.prisma = prisma;
 
-export type UserWithoutSecrets = Omit<User, 'githubId' | 'passwordHash'>
+export type UserWithoutSecrets = Omit<User, 'githubId' | 'passwordHash'>;

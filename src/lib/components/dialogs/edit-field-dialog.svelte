@@ -1,20 +1,20 @@
 <script lang="ts">
-	import * as Dialog from '@/components/ui/dialog'
-	import type { FormTemplateField } from '@prisma/client'
-	import { EditFormFieldForm } from '@/components/forms/form-template'
-	import { afterNavigate } from '$app/navigation'
-	import PenIcon from 'lucide-svelte/icons/pen'
-	import { Button } from '@/components/ui/button'
+	import * as Dialog from '@/components/ui/dialog';
+	import type { FormTemplateField } from '@prisma/client';
+	import { EditFormFieldForm } from '@/components/forms/form-template';
+	import { afterNavigate } from '$app/navigation';
+	import PenIcon from 'lucide-svelte/icons/pen';
+	import { Button } from '@/components/ui/button';
 
 	interface Props {
-		field: FormTemplateField
+		field: FormTemplateField;
 	}
 
-	let { field }: Props = $props()
+	let { field }: Props = $props();
 
-	let open = $state(false)
+	let open = $state(false);
 
-	afterNavigate(() => (open = false))
+	afterNavigate(() => (open = false));
 </script>
 
 <Dialog.Root bind:open>

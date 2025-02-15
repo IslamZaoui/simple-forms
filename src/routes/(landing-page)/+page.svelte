@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { enhance } from '$app/forms'
-	import { Button } from '@/components/ui/button'
-	import { Input } from '@/components/ui/input'
-	import { Separator } from '@/components/ui/separator'
-	import GithubIcon from 'lucide-svelte/icons/github'
+	import { enhance } from '$app/forms';
+	import { Button } from '@/components/ui/button';
+	import { Input } from '@/components/ui/input';
+	import { Separator } from '@/components/ui/separator';
+	import GithubIcon from 'lucide-svelte/icons/github';
 </script>
 
 <main class="container flex flex-1 items-center justify-center py-10">
@@ -31,13 +31,7 @@
 
 		<form class="space-y-4" method="post" use:enhance>
 			<div class="space-y-2">
-				<Input
-					type="email"
-					name="email"
-					autocomplete="email"
-					placeholder="name@example.com"
-					class="h-11"
-				/>
+				<Input type="email" name="email" autocomplete="email" placeholder="name@example.com" class="h-11" />
 			</div>
 			<Button class="w-full" type="submit">Continue with Email</Button>
 		</form>

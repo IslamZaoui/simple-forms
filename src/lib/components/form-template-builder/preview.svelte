@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { FormTemplate, FormTemplateField } from '@prisma/client'
-	import TemplatePreviewForm from './template-preview-form.svelte'
-	import * as Card from '@/components/ui/card'
+	import type { FormTemplate, FormTemplateField } from '@prisma/client';
+	import TemplatePreviewForm from './template-preview-form.svelte';
+	import * as Card from '@/components/ui/card';
 
 	type Props = {
-		template: FormTemplate
-		fields: FormTemplateField[]
-	}
+		template: FormTemplate;
+		fields: FormTemplateField[];
+	};
 
-	let { fields, template }: Props = $props()
+	let { fields, template }: Props = $props();
 </script>
 
 <div class="size-full flex-1 rounded-xl bg-muted/50 p-4">

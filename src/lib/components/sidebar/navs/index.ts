@@ -1,1 +1,1 @@
-export { default as NavUser } from './nav-user.svelte'
+export { default as NavUser } from './nav-user.svelte';

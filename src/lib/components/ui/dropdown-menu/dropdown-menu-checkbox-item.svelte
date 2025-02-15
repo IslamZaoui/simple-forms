@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive, type WithoutChildrenOrChild } from 'bits-ui'
-	import Check from 'lucide-svelte/icons/check'
-	import Minus from 'lucide-svelte/icons/minus'
-	import { cn } from '@/utils/cn.js'
-	import type { Snippet } from 'svelte'
+	import { DropdownMenu as DropdownMenuPrimitive, type WithoutChildrenOrChild } from 'bits-ui';
+	import Check from 'lucide-svelte/icons/check';
+	import Minus from 'lucide-svelte/icons/minus';
+	import { cn } from '@/utils/cn.js';
+	import type { Snippet } from 'svelte';
 
 	let {
 		ref = $bindable(null),
@@ -13,8 +13,8 @@
 		children: childrenProp,
 		...restProps
 	}: WithoutChildrenOrChild<DropdownMenuPrimitive.CheckboxItemProps> & {
-		children?: Snippet
-	} = $props()
+		children?: Snippet;
+	} = $props();
 </script>
 
 <DropdownMenuPrimitive.CheckboxItem

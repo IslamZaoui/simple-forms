@@ -1,16 +1,16 @@
 <script lang="ts">
-	import * as Sidebar from '@/components/ui/sidebar'
-	import type { SidebarGroupItem } from '.'
-	import type { Snippet } from 'svelte'
+	import * as Sidebar from '@/components/ui/sidebar';
+	import type { SidebarGroupItem } from '.';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		label: string
-		pages: SidebarGroupItem[]
-		action?: Snippet
-		menu?: Snippet
+		label: string;
+		pages: SidebarGroupItem[];
+		action?: Snippet;
+		menu?: Snippet;
 	}
 
-	let { label, pages, action, menu }: Props = $props()
+	let { label, pages, action, menu }: Props = $props();
 </script>
 
 <Sidebar.Group>

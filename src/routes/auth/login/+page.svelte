@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { LoginForm } from '@/components/forms/auth'
+	import { LoginForm } from '@/components/forms/auth';
 
-	let { data } = $props()
+	let { data } = $props();
 </script>
 
 <div class="flex w-full items-center justify-center p-4">

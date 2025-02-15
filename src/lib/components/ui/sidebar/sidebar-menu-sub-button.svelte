@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { cn } from '@/utils/cn.js'
-	import type { WithElementRef } from 'bits-ui'
-	import type { Snippet } from 'svelte'
-	import type { HTMLAnchorAttributes } from 'svelte/elements'
+	import { cn } from '@/utils/cn.js';
+	import type { WithElementRef } from 'bits-ui';
+	import type { Snippet } from 'svelte';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
 
 	let {
 		ref = $bindable(null),
@@ -13,10 +13,10 @@
 		isActive,
 		...restProps
 	}: WithElementRef<HTMLAnchorAttributes> & {
-		child?: Snippet<[{ props: Record<string, unknown> }]>
-		size?: 'sm' | 'md'
-		isActive?: boolean
-	} = $props()
+		child?: Snippet<[{ props: Record<string, unknown> }]>;
+		size?: 'sm' | 'md';
+		isActive?: boolean;
+	} = $props();
 
 	const mergedProps = $derived({
 		class: cn(
@@ -31,7 +31,7 @@
 		'data-size': size,
 		'data-active': isActive,
 		...restProps
-	})
+	});
 </script>
 
 {#if child}

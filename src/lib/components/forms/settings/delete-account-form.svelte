@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { Separator } from '@/components/ui/separator'
-	import { enhance } from '$app/forms'
-	import { Button, buttonVariants } from '@/components/ui/button'
-	import * as AlertDialog from '@/components/ui/alert-dialog'
+	import { Separator } from '@/components/ui/separator';
+	import { enhance } from '$app/forms';
+	import { Button, buttonVariants } from '@/components/ui/button';
+	import * as AlertDialog from '@/components/ui/alert-dialog';
 </script>
 
 <div class="flex flex-col rounded-md border border-destructive bg-muted/50">
 	<div class="space-y-2 p-4">
 		<h2 class="text-2xl font-bold">Delete Account</h2>
 		<p>
-			Permanently remove your Personal Account and all of its contents from simple forms. This
-			action is not reversible, so please continue with caution.
+			Permanently remove your Personal Account and all of its contents from simple forms. This action is not reversible,
+			so please continue with caution.
 		</p>
 	</div>
 	<Separator class="bg-destructive" />

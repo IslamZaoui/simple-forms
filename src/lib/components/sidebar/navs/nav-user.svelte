@@ -1,22 +1,22 @@
 <script lang="ts">
-	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down'
-	import LogOut from 'lucide-svelte/icons/log-out'
-	import * as DropdownMenu from '@/components/ui/dropdown-menu'
-	import * as Sidebar from '@/components/ui/sidebar'
-	import { useSidebar } from '@/components/ui/sidebar'
-	import { BeamAvatar } from '@/components/ui/boring-avatars'
-	import { goto } from '$app/navigation'
-	import { LOGOUT_URL } from '@/config/auth'
-	import type { UserWithoutSecrets } from '@/server/database'
-	import SettingsIcon from 'lucide-svelte/icons/settings'
+	import ChevronsUpDown from 'lucide-svelte/icons/chevrons-up-down';
+	import LogOut from 'lucide-svelte/icons/log-out';
+	import * as DropdownMenu from '@/components/ui/dropdown-menu';
+	import * as Sidebar from '@/components/ui/sidebar';
+	import { useSidebar } from '@/components/ui/sidebar';
+	import { BeamAvatar } from '@/components/ui/boring-avatars';
+	import { goto } from '$app/navigation';
+	import { LOGOUT_URL } from '@/config/auth';
+	import type { UserWithoutSecrets } from '@/server/database';
+	import SettingsIcon from 'lucide-svelte/icons/settings';
 
 	interface Props {
-		user: UserWithoutSecrets
+		user: UserWithoutSecrets;
 	}
 
-	let { user }: Props = $props()
+	let { user }: Props = $props();
 
-	const sidebar = useSidebar()
+	const sidebar = useSidebar();
 </script>
 
 {#snippet UserInfo()}

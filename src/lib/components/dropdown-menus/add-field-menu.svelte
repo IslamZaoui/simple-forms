@@ -1,21 +1,21 @@
 <script lang="ts">
-	import * as DropdownMenu from '@/components/ui/dropdown-menu'
-	import type { Snippet } from 'svelte'
-	import { AddFieldDialog } from '../dialogs'
-	import { afterNavigate } from '$app/navigation'
-	import { fieldLabels, type FieldLabels } from '@/config/form-builder'
-	import { FormTemplateFieldType } from '@prisma/client'
+	import * as DropdownMenu from '@/components/ui/dropdown-menu';
+	import type { Snippet } from 'svelte';
+	import { AddFieldDialog } from '../dialogs';
+	import { afterNavigate } from '$app/navigation';
+	import { fieldLabels, type FieldLabels } from '@/config/form-builder';
+	import { FormTemplateFieldType } from '@prisma/client';
 
 	interface Props {
-		templateId: string
-		children: Snippet<[{ props: Record<string, unknown> }]>
+		templateId: string;
+		children: Snippet<[{ props: Record<string, unknown> }]>;
 	}
 
-	let { children, templateId }: Props = $props()
+	let { children, templateId }: Props = $props();
 
-	let open = $state(false)
+	let open = $state(false);
 
-	afterNavigate(() => (open = false))
+	afterNavigate(() => (open = false));
 </script>
 
 <DropdownMenu.Root bind:open>

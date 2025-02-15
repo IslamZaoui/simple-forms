@@ -1,9 +1,9 @@
 <script lang="ts">
-	import thisIsFineImage from '@/assets/this-is-fine.jpg?enhanced'
-	import { Button } from '@/components/ui/button'
-	import BlindsIcon from 'lucide-svelte/icons/blinds'
-	import CircleHelpIcon from 'lucide-svelte/icons/circle-help'
-	import { page } from '$app/state'
+	import thisIsFineImage from '@/assets/this-is-fine.jpg?enhanced';
+	import { Button } from '@/components/ui/button';
+	import BlindsIcon from 'lucide-svelte/icons/blinds';
+	import CircleHelpIcon from 'lucide-svelte/icons/circle-help';
+	import { page } from '$app/state';
 </script>
 
 <div class="dots-background"></div>

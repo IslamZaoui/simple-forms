@@ -1,17 +1,17 @@
 <script lang="ts">
-	import type { FlashMessage } from '@/components/providers'
-	import * as Alert from '@/components/ui/alert'
-	import CircleCheckIcon from 'lucide-svelte/icons/circle-check'
-	import CircleXIcon from 'lucide-svelte/icons/circle-x'
-	import CircleAlertIcon from 'lucide-svelte/icons/circle-alert'
-	import InfoIcon from 'lucide-svelte/icons/info'
-	import type { Writable } from 'svelte/store'
+	import type { FlashMessage } from '@/components/providers';
+	import * as Alert from '@/components/ui/alert';
+	import CircleCheckIcon from 'lucide-svelte/icons/circle-check';
+	import CircleXIcon from 'lucide-svelte/icons/circle-x';
+	import CircleAlertIcon from 'lucide-svelte/icons/circle-alert';
+	import InfoIcon from 'lucide-svelte/icons/info';
+	import type { Writable } from 'svelte/store';
 
 	interface Props {
-		message: Writable<FlashMessage | undefined>
+		message: Writable<FlashMessage | undefined>;
 	}
 
-	let { message }: Props = $props()
+	let { message }: Props = $props();
 </script>
 
 {#if $message}

@@ -1,1 +1,1 @@
-export { default as BeamAvatar } from './beam-avatar.svelte'
+export { default as BeamAvatar } from './beam-avatar.svelte';

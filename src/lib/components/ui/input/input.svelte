@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { HTMLInputAttributes } from 'svelte/elements'
-	import type { WithElementRef } from 'bits-ui'
-	import { cn } from '@/utils/cn.js'
+	import type { HTMLInputAttributes } from 'svelte/elements';
+	import type { WithElementRef } from 'bits-ui';
+	import { cn } from '@/utils/cn.js';
 
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
 		class: className,
 		...restProps
-	}: WithElementRef<HTMLInputAttributes> = $props()
+	}: WithElementRef<HTMLInputAttributes> = $props();
 </script>
 
 <input

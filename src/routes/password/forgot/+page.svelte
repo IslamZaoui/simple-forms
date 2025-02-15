@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { ForgotPasswordForm } from '@/components/forms/post-auth'
+	import { ForgotPasswordForm } from '@/components/forms/post-auth';
 
-	let { data } = $props()
+	let { data } = $props();
 </script>
 
 <ForgotPasswordForm {data} />

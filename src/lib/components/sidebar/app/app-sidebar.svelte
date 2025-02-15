@@ -1,34 +1,26 @@
 <script lang="ts">
-	import { NavUser } from '../navs'
-	import * as Sidebar from '@/components/ui/sidebar'
-	import type { UserWithoutSecrets } from '@/server/database'
-	import type { ComponentProps } from 'svelte'
-	import { ReusableSidebarGroup, type SidebarGroupItem } from '../sidebar-group'
-	import { getUserFormTemplatesItems, userSpaceItems } from './groups'
-	import PlusIcon from 'lucide-svelte/icons/plus'
-	import { FormTemplateDialog } from '@/components/dialogs'
-	import type { FormTemplate } from '@prisma/client'
-	import EllipsisIcon from 'lucide-svelte/icons/ellipsis'
+	import { NavUser } from '../navs';
+	import * as Sidebar from '@/components/ui/sidebar';
+	import type { UserWithoutSecrets } from '@/server/database';
+	import type { ComponentProps } from 'svelte';
+	import { ReusableSidebarGroup, type SidebarGroupItem } from '../sidebar-group';
+	import { getUserFormTemplatesItems, userSpaceItems } from './groups';
+	import PlusIcon from 'lucide-svelte/icons/plus';
+	import { FormTemplateDialog } from '@/components/dialogs';
+	import type { FormTemplate } from '@prisma/client';
+	import EllipsisIcon from 'lucide-svelte/icons/ellipsis';
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
-		user: UserWithoutSecrets
-		getLatestTemplates: Promise<FormTemplate[]>
-	}
+		user: UserWithoutSecrets;
+		latestTemplates: FormTemplate[];
+	};
 
 	const seeAll = {
 		title: 'See all templates',
 		url: '/app/form-templates'
-	}
-	let userFormTemplatesItems = $state<SidebarGroupItem[]>([seeAll])
+	};
 
-	let { ref = $bindable(null), user, getLatestTemplates, ...restProps }: Props = $props()
-
-	$effect(() => {
-		getLatestTemplates.then((templates) => {
-			const temp = getUserFormTemplatesItems(templates)
-			userFormTemplatesItems = [...temp, seeAll]
-		})
-	})
+	let { ref = $bindable(null), user, latestTemplates, ...restProps }: Props = $props();
 </script>
 
 <Sidebar.Root bind:ref variant="inset" {...restProps}>
@@ -48,7 +40,7 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<ReusableSidebarGroup label="Application" pages={userSpaceItems} />
-		<ReusableSidebarGroup label="Form Templates" pages={userFormTemplatesItems}>
+		<ReusableSidebarGroup label="Form Templates" pages={[...getUserFormTemplatesItems(latestTemplates), seeAll]}>
 			{#snippet action()}
 				<FormTemplateDialog>
 					{#snippet trigger({ props })}

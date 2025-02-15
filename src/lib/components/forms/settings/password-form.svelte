@@ -1,38 +1,33 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zod } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { changePasswordSchema } from '@/schemas/settings'
-	import { Separator } from '@/components/ui/separator'
-	import type { UserWithoutSecrets } from '@/server/database'
-	import { PasswordInput } from '@/components/ui/password-input'
-	import { FORGOT_PASSWORD_URL } from '@/config/auth'
-	import { Checkbox } from '@/components/ui/checkbox'
+	import * as Form from '@/components/ui/form';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { changePasswordSchema } from '@/schemas/settings';
+	import { Separator } from '@/components/ui/separator';
+	import type { UserWithoutSecrets } from '@/server/database';
+	import { PasswordInput } from '@/components/ui/password-input';
+	import { FORGOT_PASSWORD_URL } from '@/config/auth';
+	import { Checkbox } from '@/components/ui/checkbox';
 
 	type Props = {
 		data: {
-			changePasswordForm: SuperValidated<Infer<typeof changePasswordSchema>>
-			user: UserWithoutSecrets
-		}
-	}
+			changePasswordForm: SuperValidated<Infer<typeof changePasswordSchema>>;
+			user: UserWithoutSecrets;
+		};
+	};
 
-	let { data }: Props = $props()
+	let { data }: Props = $props();
 
 	const form = superForm(data.changePasswordForm, {
 		validators: zod(changePasswordSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form
-	class="flex flex-col rounded-md border border-muted bg-muted/50"
-	action="?/password"
-	method="POST"
-	use:enhance
->
+<form class="flex flex-col rounded-md border border-muted bg-muted/50" action="?/password" method="POST" use:enhance>
 	<div class="space-y-2 p-4">
 		<h2 class="text-2xl font-bold">Change Password</h2>
 
@@ -90,9 +85,7 @@
 					<Checkbox {...props} bind:checked={$formData.logout} />
 					<div class="space-y-1 leading-none">
 						<Form.Label>Logout from other devices?</Form.Label>
-						<Form.Description>
-							When enabled, you will be logged out from all other devices.
-						</Form.Description>
+						<Form.Description>When enabled, you will be logged out from all other devices.</Form.Description>
 					</div>
 				{/snippet}
 			</Form.Control>

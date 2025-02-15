@@ -1,9 +1,9 @@
 <script lang="ts">
-	import thisIsFineImage from '@/assets/this-is-fine.jpg?enhanced'
-	import { Button } from '@/components/ui/button'
-	import { page } from '$app/state'
-	import { PageWrapper } from '@/components/sidebar/page-slot'
-	import { REDIRECT_USER_URL } from '@/config/auth'
+	import thisIsFineImage from '@/assets/this-is-fine.jpg?enhanced';
+	import { Button } from '@/components/ui/button';
+	import { page } from '$app/state';
+	import { PageWrapper } from '@/components/sidebar/page-slot';
+	import { REDIRECT_USER_URL } from '@/config/auth';
 </script>
 
 <PageWrapper links={[{ label: `Error ${page.status}` }]}>
@@ -17,9 +17,7 @@
 						{page.error?.details}
 					</p>
 				</div>
-				<Button class="flex-1" variant="default" href={REDIRECT_USER_URL}>
-					Go back To Dashboard
-				</Button>
+				<Button class="flex-1" variant="default" href={REDIRECT_USER_URL}>Go back To Dashboard</Button>
 			</div>
 		</div>
 		<div class="flex flex-1 items-center justify-center p-4 lg:justify-start lg:p-20">

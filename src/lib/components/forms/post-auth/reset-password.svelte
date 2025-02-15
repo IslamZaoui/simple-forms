@@ -1,21 +1,19 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { resetPasswordSchema } from '@/schemas/post-auth'
-	import { PasswordInput } from '@/components/ui/password-input'
+	import * as Form from '@/components/ui/form';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { resetPasswordSchema } from '@/schemas/post-auth';
+	import { PasswordInput } from '@/components/ui/password-input';
 
-	let {
-		data
-	}: { data: { form: SuperValidated<Infer<typeof resetPasswordSchema>>; email: string } } = $props()
+	let { data }: { data: { form: SuperValidated<Infer<typeof resetPasswordSchema>>; email: string } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(resetPasswordSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
 <form class="mx-auto w-full max-w-sm space-y-5 py-1" method="POST" use:enhance>
@@ -25,12 +23,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>New Password <span class="text-destructive">*</span></Form.Label>
-				<PasswordInput
-					placeholder="●●●●●●●●"
-					autocomplete="new-password"
-					{...props}
-					bind:value={$formData.password}
-				/>
+				<PasswordInput placeholder="●●●●●●●●" autocomplete="new-password" {...props} bind:value={$formData.password} />
 			{/snippet}
 		</Form.Control>
 	</Form.Field>

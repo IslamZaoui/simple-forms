@@ -1,21 +1,21 @@
-import { REDIRECT_GUEST_URL, REDIRECT_USER_URL } from '@/config/auth'
-import { verifyEmailSchema } from '@/schemas/post-auth'
+import { REDIRECT_GUEST_URL, REDIRECT_USER_URL } from '@/config/auth';
+import { verifyEmailSchema } from '@/schemas/post-auth';
 import {
 	createEmailVerificationRequest,
 	deleteEmailVerificationRequestCookie,
 	deleteUserEmailVerificationRequest,
 	getUserEmailVerificationRequestFromCookie,
 	setEmailVerificationRequestCookie
-} from '@/server/auth/email-verification'
-import { invalidateUserPasswordResetSessions } from '@/server/auth/password-reset'
-import { updateUserVerifiedEmail } from '@/server/auth/user'
-import { sendVerificationEmail } from '@/server/mail/email-verification'
-import { createRateLimiter } from '@/server/rate-limiter'
-import { formatSeconds } from '@/utils/time'
-import { redirect } from 'sveltekit-flash-message/server'
-import { fail, message, setError, superValidate } from 'sveltekit-superforms'
-import { zod } from 'sveltekit-superforms/adapters'
-import type { Actions, PageServerLoad } from './$types'
+} from '@/server/auth/email-verification';
+import { invalidateUserPasswordResetSessions } from '@/server/auth/password-reset';
+import { updateUserVerifiedEmail } from '@/server/auth/user';
+import { sendVerificationEmail } from '@/server/mail/email-verification';
+import { createRateLimiter } from '@/server/rate-limiter';
+import { formatSeconds } from '@/utils/time';
+import { redirect } from 'sveltekit-flash-message/server';
+import { fail, message, setError, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types';
 
 const limiter = createRateLimiter({
 	prefix: 'verify-email',
@@ -23,49 +23,49 @@ const limiter = createRateLimiter({
 		IP: [5, '30m'],
 		IPUA: [3, '30m']
 	}
-})
+});
 
 export const load: PageServerLoad = async (event) => {
-	const session = event.locals.auth()
+	const session = event.locals.auth();
 
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL)
+		redirect(302, REDIRECT_GUEST_URL);
 	}
 
-	let request = await getUserEmailVerificationRequestFromCookie(event)
+	let request = await getUserEmailVerificationRequestFromCookie(event);
 	if (!request || Date.now() >= request.expiresAt.getTime()) {
 		if (session.user.emailVerified) {
-			redirect(302, REDIRECT_USER_URL)
+			redirect(302, REDIRECT_USER_URL);
 		}
-		request = await createEmailVerificationRequest(session.user.id, session.user.email)
-		await sendVerificationEmail(request.email, request.code)
-		setEmailVerificationRequestCookie(event, request)
+		request = await createEmailVerificationRequest(session.user.id, session.user.email);
+		await sendVerificationEmail(request.email, request.code);
+		setEmailVerificationRequestCookie(event, request);
 	}
 
 	return {
 		email: request.email,
 		form: await superValidate(event, zod(verifyEmailSchema))
-	}
-}
+	};
+};
 
 export const actions: Actions = {
 	verify: async (event) => {
 		if (!event.locals.auth()) {
-			redirect(302, REDIRECT_GUEST_URL)
+			redirect(302, REDIRECT_GUEST_URL);
 		}
 
-		let request = await getUserEmailVerificationRequestFromCookie(event)
+		let request = await getUserEmailVerificationRequestFromCookie(event);
 		if (!request) {
-			redirect(302, REDIRECT_GUEST_URL)
+			redirect(302, REDIRECT_GUEST_URL);
 		}
 
-		const form = await superValidate(event, zod(verifyEmailSchema))
+		const form = await superValidate(event, zod(verifyEmailSchema));
 		if (!form.valid) {
-			return fail(400, { form })
+			return fail(400, { form });
 		}
 
 		if (limiter) {
-			const state = await limiter.check(event)
+			const state = await limiter.check(event);
 			if (state.limited) {
 				return message(
 					form,
@@ -77,28 +77,28 @@ export const actions: Actions = {
 					{
 						status: 429
 					}
-				)
+				);
 			}
 		}
 
 		if (Date.now() >= request.expiresAt.getTime()) {
-			request = await createEmailVerificationRequest(request.userId, request.email)
-			await sendVerificationEmail(request.email, request.code)
+			request = await createEmailVerificationRequest(request.userId, request.email);
+			await sendVerificationEmail(request.email, request.code);
 			return message(form, {
 				type: 'error',
 				message: 'Verification code has expired',
 				description: 'A new verification code has been sent to your email address.'
-			})
+			});
 		}
 
 		if (request.code !== form.data.code) {
-			return setError(form, 'code', 'Invalid code')
+			return setError(form, 'code', 'Invalid code');
 		}
 
-		await deleteUserEmailVerificationRequest(request.userId)
-		await invalidateUserPasswordResetSessions(request.userId)
-		deleteEmailVerificationRequestCookie(event)
-		await updateUserVerifiedEmail(request.userId, request.email)
+		await deleteUserEmailVerificationRequest(request.userId);
+		await invalidateUserPasswordResetSessions(request.userId);
+		deleteEmailVerificationRequestCookie(event);
+		await updateUserVerifiedEmail(request.userId, request.email);
 
 		redirect(
 			REDIRECT_USER_URL,
@@ -107,23 +107,23 @@ export const actions: Actions = {
 				message: 'You have successfully verified your email'
 			},
 			event
-		)
+		);
 	},
 	resend: async (event) => {
-		const session = event.locals.auth()
+		const session = event.locals.auth();
 		if (!session) {
-			redirect(302, REDIRECT_GUEST_URL)
+			redirect(302, REDIRECT_GUEST_URL);
 		}
 
-		let request = await getUserEmailVerificationRequestFromCookie(event)
+		let request = await getUserEmailVerificationRequestFromCookie(event);
 		if (!request) {
-			request = await createEmailVerificationRequest(session.user.id, session.user.email)
+			request = await createEmailVerificationRequest(session.user.id, session.user.email);
 		} else {
-			request = await createEmailVerificationRequest(session.user.id, request.email)
+			request = await createEmailVerificationRequest(session.user.id, request.email);
 		}
 
-		await sendVerificationEmail(request.email, request.code)
-		setEmailVerificationRequestCookie(event, request)
+		await sendVerificationEmail(request.email, request.code);
+		setEmailVerificationRequestCookie(event, request);
 
 		redirect(
 			{
@@ -131,6 +131,6 @@ export const actions: Actions = {
 				message: 'Verification code has been sent to your email address'
 			},
 			event
-		)
+		);
 	}
-}
+};

@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
-	import type { Snippet } from 'svelte'
-	import PageBreadcrumb, { type Link } from './page-breadcrumb.svelte'
+	import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
+	import type { Snippet } from 'svelte';
+	import PageBreadcrumb, { type Link } from './page-breadcrumb.svelte';
 
 	interface Props {
-		children: Snippet
-		links?: Link[]
+		children: Snippet;
+		links?: Link[];
 	}
 
-	let { children, links = undefined }: Props = $props()
+	let { children, links = undefined }: Props = $props();
 </script>
 
 <SidebarInset>

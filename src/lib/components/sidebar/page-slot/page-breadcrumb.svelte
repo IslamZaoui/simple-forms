@@ -1,23 +1,23 @@
 <script lang="ts" module>
 	export type Link = {
-		label: string
-		href?: string
-	}
+		label: string;
+		href?: string;
+	};
 </script>
 
 <script lang="ts">
-	import * as Breadcrumb from '@/components/ui/breadcrumb'
-	import * as Drawer from '@/components/ui/drawer'
-	import * as DropdownMenu from '@/components/ui/dropdown-menu'
-	import { Separator } from '@/components/ui/separator'
-	import { IsMobile } from '@/hooks/is-mobile.svelte'
-	import { buttonVariants } from '@/components/ui/button'
+	import * as Breadcrumb from '@/components/ui/breadcrumb';
+	import * as Drawer from '@/components/ui/drawer';
+	import * as DropdownMenu from '@/components/ui/dropdown-menu';
+	import { Separator } from '@/components/ui/separator';
+	import { IsMobile } from '@/hooks/is-mobile.svelte';
+	import { buttonVariants } from '@/components/ui/button';
 
-	let { links = undefined }: { links?: Link[] } = $props()
+	let { links = undefined }: { links?: Link[] } = $props();
 
-	const ITEMS_TO_DISPLAY = 3
-	let open = $state(false)
-	const isMobile = new IsMobile()
+	const ITEMS_TO_DISPLAY = 3;
+	let open = $state(false);
+	const isMobile = new IsMobile();
 </script>
 
 {#if links}
@@ -72,9 +72,7 @@
 										{/each}
 									</div>
 									<Drawer.Footer class="pt-4">
-										<Drawer.Close class={buttonVariants({ variant: 'outline' })}>
-											Close
-										</Drawer.Close>
+										<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Close</Drawer.Close>
 									</Drawer.Footer>
 								</Drawer.Content>
 							</Drawer.Root>

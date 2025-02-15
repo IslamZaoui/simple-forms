@@ -1,23 +1,23 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { Input } from '@/components/ui/input'
-	import { PasswordInput } from '@/components/ui/password-input'
-	import { loginSchema } from '@/schemas/auth'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import Separator from '@/components/ui/separator/separator.svelte'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { Checkbox } from '@/components/ui/checkbox'
-	import { FORGOT_PASSWORD_URL, REGISTER_URL } from '@/config/auth'
+	import * as Form from '@/components/ui/form';
+	import { Input } from '@/components/ui/input';
+	import { PasswordInput } from '@/components/ui/password-input';
+	import { loginSchema } from '@/schemas/auth';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import Separator from '@/components/ui/separator/separator.svelte';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { Checkbox } from '@/components/ui/checkbox';
+	import { FORGOT_PASSWORD_URL, REGISTER_URL } from '@/config/auth';
 
-	let { data }: { data: { form: SuperValidated<Infer<typeof loginSchema>> } } = $props()
+	let { data }: { data: { form: SuperValidated<Infer<typeof loginSchema>> } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(loginSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
 <form class="mx-auto w-full max-w-md space-y-5 py-1" method="POST" use:enhance>
@@ -43,12 +43,7 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Password <span class="text-destructive">*</span></Form.Label>
-				<PasswordInput
-					placeholder="●●●●●●●●"
-					autocomplete="new-password"
-					{...props}
-					bind:value={$formData.password}
-				/>
+				<PasswordInput placeholder="●●●●●●●●" autocomplete="new-password" {...props} bind:value={$formData.password} />
 			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />

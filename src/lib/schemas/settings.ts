@@ -1,13 +1,13 @@
-import { z } from 'zod'
-import { email, name, password } from './auth'
+import { z } from 'zod';
+import { email, name, password } from './auth';
 
 export const changeNameSchema = z.object({
 	name
-})
+});
 
 export const changeEmailSchema = z.object({
 	email
-})
+});
 
 export const changePasswordSchema = z
 	.object({
@@ -22,6 +22,6 @@ export const changePasswordSchema = z
 				code: 'custom',
 				message: 'Passwords do not match',
 				path: ['newPassword']
-			})
+			});
 		}
-	})
+	});

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { VerifyEmailForm, ResendVerificationEmailForm } from '@/components/forms/post-auth'
-	import { Button } from '@/components/ui/form'
-	import { LOGOUT_URL } from '@/config/auth'
+	import { VerifyEmailForm, ResendVerificationEmailForm } from '@/components/forms/post-auth';
+	import { Button } from '@/components/ui/form';
+	import { LOGOUT_URL } from '@/config/auth';
 
-	let { data } = $props()
+	let { data } = $props();
 </script>
 
 <div class="dots-background"></div>

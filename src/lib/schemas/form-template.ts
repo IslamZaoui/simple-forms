@@ -1,5 +1,5 @@
-import { FIELD_TYPE } from '@/config/form-builder'
-import { z } from 'zod'
+import { FIELD_TYPE } from '@/config/form-builder';
+import { z } from 'zod';
 
 const baseFieldSchema = z.object({
 	label: z
@@ -9,14 +9,10 @@ const baseFieldSchema = z.object({
 		.trim(),
 	description: z.string().max(120, 'Description must not exceed 120 characters').trim().optional(),
 	required: z.boolean({ required_error: 'Required is required' }).default(true),
-	placeholder: z
-		.string()
-		.max(120, 'Placeholder should not exceed 120 characters')
-		.trim()
-		.optional(),
+	placeholder: z.string().max(120, 'Placeholder should not exceed 120 characters').trim().optional(),
 	min: z.number().min(0, 'Minimum value cannot be less than 0').optional(),
 	max: z.number().optional()
-})
+});
 
 export const createFormTemplateFieldSchema = baseFieldSchema
 	.extend({
@@ -28,16 +24,16 @@ export const createFormTemplateFieldSchema = baseFieldSchema
 				code: 'custom',
 				message: 'Minimum value must be less than or equal to maximum value',
 				path: ['min']
-			})
+			});
 		}
 		if (max && max >= Infinity) {
 			ctx.addIssue({
 				code: 'custom',
 				message: 'Maximum value must be less than Infinity',
 				path: ['max']
-			})
+			});
 		}
-	})
+	});
 
 export const updateFormTemplateFieldSchema = baseFieldSchema.superRefine(({ min, max }, ctx) => {
 	if (min && max && min > max) {
@@ -45,16 +41,16 @@ export const updateFormTemplateFieldSchema = baseFieldSchema.superRefine(({ min,
 			code: 'custom',
 			message: 'Minimum value must be less than or equal to maximum value',
 			path: ['min']
-		})
+		});
 	}
 	if (max && max >= Infinity) {
 		ctx.addIssue({
 			code: 'custom',
 			message: 'Maximum value must be less than Infinity',
 			path: ['max']
-		})
+		});
 	}
-})
+});
 
 export const formTemplateSchema = z.object({
 	title: z
@@ -69,4 +65,4 @@ export const formTemplateSchema = z.object({
 		.regex(/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/, 'Slug must be like this "This-is-a-slug"')
 		.trim(),
 	details: z.string().max(120, 'Details must not exceed 120 characters').optional()
-})
+});

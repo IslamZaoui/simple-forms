@@ -1,1 +1,1 @@
-export { load } from 'sveltekit-flash-message/server'
+export { load } from 'sveltekit-flash-message/server';

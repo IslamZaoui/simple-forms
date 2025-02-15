@@ -1,9 +1,9 @@
-import { APP_EMAIL } from '$env/static/private'
-import { resend } from './resend'
+import { APP_EMAIL } from '$env/static/private';
+import { resend } from './resend';
 
 export async function sendVerificationEmail(email: string, code: string) {
 	if (!resend) {
-		return console.log(`[Email] Verification code sent to ${email}: ${code}`)
+		return console.log(`[Email] Verification code sent to ${email}: ${code}`);
 	}
 
 	await resend.emails.send({
@@ -11,5 +11,5 @@ export async function sendVerificationEmail(email: string, code: string) {
 		to: email,
 		subject: 'Verify your email',
 		text: `Your verification code is ${code}.`
-	})
+	});
 }

@@ -1,20 +1,20 @@
 <script lang="ts">
-	import * as Dialog from '@/components/ui/dialog'
-	import { CreateUpdateFormTemplateForm } from '../forms/form-template'
-	import type { FormTemplate } from '@prisma/client'
-	import type { Snippet } from 'svelte'
-	import { afterNavigate } from '$app/navigation'
+	import * as Dialog from '@/components/ui/dialog';
+	import { CreateUpdateFormTemplateForm } from '../forms/form-template';
+	import type { FormTemplate } from '@prisma/client';
+	import type { Snippet } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 
 	interface Props {
-		data?: FormTemplate
-		trigger: Snippet<[{ props: Record<string, unknown> }]>
+		data?: FormTemplate;
+		trigger: Snippet<[{ props: Record<string, unknown> }]>;
 	}
 
-	let { data, trigger }: Props = $props()
+	let { data, trigger }: Props = $props();
 
-	let open = $state(false)
+	let open = $state(false);
 
-	afterNavigate(() => (open = false))
+	afterNavigate(() => (open = false));
 </script>
 
 <Dialog.Root bind:open>

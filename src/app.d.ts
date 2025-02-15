@@ -1,23 +1,23 @@
-import { FlashMessage } from '@/components/providers'
-import type { AuthData } from '@/server/auth/session'
+import { FlashMessage } from '@/components/providers';
+import type { AuthData } from '@/server/auth/session';
 
 declare global {
 	namespace App {
 		interface Error {
-			details?: string
+			details?: string;
 		}
 		interface Locals {
-			auth(): AuthData | null
+			auth(): AuthData | null;
 		}
 		interface PageData {
-			flash?: FlashMessage
+			flash?: FlashMessage;
 		}
 		// interface PageState {}
 		// interface Platform {}
 		namespace Superforms {
-			type Message = FlashMessage
+			type Message = FlashMessage;
 		}
 	}
 }
 
-export {}
+export {};

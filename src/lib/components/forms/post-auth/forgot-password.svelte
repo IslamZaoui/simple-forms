@@ -1,19 +1,19 @@
 <script lang="ts">
-	import * as Form from '@/components/ui/form'
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms'
-	import { zodClient } from 'sveltekit-superforms/adapters'
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
-	import MessageAlert from '@/components/forms/message-alert.svelte'
-	import { forgotPasswordSchema } from '@/schemas/post-auth'
-	import { Input } from '@/components/ui/input'
+	import * as Form from '@/components/ui/form';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
+	import MessageAlert from '@/components/forms/message-alert.svelte';
+	import { forgotPasswordSchema } from '@/schemas/post-auth';
+	import { Input } from '@/components/ui/input';
 
-	let { data }: { data: { form: SuperValidated<Infer<typeof forgotPasswordSchema>> } } = $props()
+	let { data }: { data: { form: SuperValidated<Infer<typeof forgotPasswordSchema>> } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(forgotPasswordSchema)
-	})
+	});
 
-	const { form: formData, enhance, delayed, message } = form
+	const { form: formData, enhance, delayed, message } = form;
 </script>
 
 <form class="mx-auto w-full max-w-sm space-y-5 py-1" method="POST" use:enhance>

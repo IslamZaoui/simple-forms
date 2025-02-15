@@ -1,21 +1,21 @@
 <script lang="ts">
-	import type { FormTemplateField } from '@prisma/client'
-	import * as Fields from './fields'
-	import type { SuperForm } from 'sveltekit-superforms'
-	import type { FlashMessage } from '../providers'
+	import type { FormTemplateField } from '@prisma/client';
+	import * as Fields from './fields';
+	import type { SuperForm } from 'sveltekit-superforms';
+	import type { FlashMessage } from '../providers';
 
 	interface Props {
 		form: SuperForm<
 			{
-				[x: string]: any
+				[x: string]: any;
 			},
 			FlashMessage
-		>
-		fieldData: unknown
-		field: FormTemplateField
+		>;
+		fieldData: unknown;
+		field: FormTemplateField;
 	}
 
-	let { field, form, fieldData = $bindable() }: Props = $props()
+	let { field, form, fieldData = $bindable() }: Props = $props();
 </script>
 
 {#if field.type === 'text' || field.type === 'email' || field.type === 'number'}

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { VerifyEmailForm } from '@/components/forms/post-auth'
+	import { VerifyEmailForm } from '@/components/forms/post-auth';
 
-	let { data } = $props()
+	let { data } = $props();
 </script>
 
 <VerifyEmailForm {data} />

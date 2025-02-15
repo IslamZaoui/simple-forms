@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui'
-	import { cn } from '@/utils/cn.js'
+	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
+	import { cn } from '@/utils/cn.js';
 
 	let {
 		ref = $bindable(null),
@@ -8,8 +8,8 @@
 		inset,
 		...restProps
 	}: DropdownMenuPrimitive.GroupHeadingProps & {
-		inset?: boolean
-	} = $props()
+		inset?: boolean;
+	} = $props();
 </script>
 
 <DropdownMenuPrimitive.GroupHeading

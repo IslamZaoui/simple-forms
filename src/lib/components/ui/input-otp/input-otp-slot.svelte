@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { PinInput as InputOTPPrimitive } from 'bits-ui'
-	import type { ComponentProps } from 'svelte'
-	import { cn } from '@/utils/cn.js'
+	import { PinInput as InputOTPPrimitive } from 'bits-ui';
+	import type { ComponentProps } from 'svelte';
+	import { cn } from '@/utils/cn.js';
 
 	let {
 		ref = $bindable(null),
 		cell,
 		class: className,
 		...restProps
-	}: ComponentProps<typeof InputOTPPrimitive.Cell> = $props()
+	}: ComponentProps<typeof InputOTPPrimitive.Cell> = $props();
 </script>
 
 <InputOTPPrimitive.Cell
