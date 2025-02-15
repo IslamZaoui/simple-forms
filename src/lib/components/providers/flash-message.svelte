@@ -37,4 +37,4 @@
 	});
 </script>
 
-<Toaster richColors />
+<Toaster closeButton richColors />

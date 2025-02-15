@@ -15,7 +15,7 @@
 
 <PageWrapper {links}>
 	<Tabs.Root class="flex h-full flex-col gap-2" value="general">
-		<Tabs.List class="justify-start bg-muted/50">
+		<Tabs.List class="justify-start border border-muted bg-muted/50">
 			<Tabs.Trigger value="general">General</Tabs.Trigger>
 			<Tabs.Trigger value="security">Security</Tabs.Trigger>
 			<Tabs.Trigger value="danger">Danger zone</Tabs.Trigger>

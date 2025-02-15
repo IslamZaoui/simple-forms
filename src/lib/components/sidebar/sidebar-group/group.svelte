@@ -2,6 +2,7 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import type { SidebarGroupItem } from '.';
 	import type { Snippet } from 'svelte';
+	import { page } from '$app/state';
 
 	interface Props {
 		label: string;
@@ -20,7 +21,7 @@
 		<Sidebar.Menu>
 			{#each pages as { title, url, Icon, hasAction }}
 				<Sidebar.MenuItem>
-					<Sidebar.MenuButton>
+					<Sidebar.MenuButton class={url === page.url.pathname ? 'text-primary/90 transition-colors' : ''}>
 						{#snippet child({ props })}
 							<a href={url} {...props}>
 								{#if Icon}

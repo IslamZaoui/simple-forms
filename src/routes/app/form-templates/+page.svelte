@@ -24,7 +24,7 @@
 				{/each}
 			</div>
 		{:else}
-			<p class="text-center text-muted-foreground">No forms available.</p>
+			<p class="flex flex-1 items-center justify-center text-muted-foreground">No forms available.</p>
 		{/if}
 	</div>
 </PageWrapper>

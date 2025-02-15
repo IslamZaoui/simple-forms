@@ -25,7 +25,9 @@
 
 <PageWrapper {links}>
 	<div class="flex h-full flex-col gap-4">
-		<div class="flex max-h-[75px] w-full flex-1 items-center justify-between gap-4 rounded-xl bg-muted/50 p-4">
+		<div
+			class="flex max-h-[75px] w-full flex-1 items-center justify-between gap-4 rounded-xl border border-muted bg-muted/50 p-4"
+		>
 			<h2 class="text-2xl font-bold">
 				<span class="text-muted-foreground">{!data.template.published ? 'Draft: ' : ''}</span>
 				{data.template.title}
@@ -43,7 +45,9 @@
 			</div>
 		</div>
 		{#await data.getFields}
-			<div class="flex size-full flex-1 items-center justify-center gap-2 rounded-xl bg-muted/50 p-4">
+			<div
+				class="flex size-full flex-1 items-center justify-center gap-2 rounded-xl border border-muted bg-muted/50 p-4"
+			>
 				<SpinnerIcon class="animate-spin" />
 				<span>Loading form fields...</span>
 			</div>
@@ -55,7 +59,7 @@
 				</div>
 			{:else}
 				<Tabs.Root class="flex flex-1 flex-col" value="editor">
-					<Tabs.List class="w-full bg-muted/50">
+					<Tabs.List class="w-full border border-muted bg-muted/50">
 						<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
 						<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
 					</Tabs.List>

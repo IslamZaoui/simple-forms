@@ -25,7 +25,7 @@
 	const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form class="flex flex-col rounded-md border border-muted bg-muted/50">
+<form class="flex flex-col rounded-md border border-muted bg-muted/50" action="?/name" method="POST" use:enhance>
 	<div class="p-4">
 		<Form.Field {form} name="name">
 			<Form.Control>

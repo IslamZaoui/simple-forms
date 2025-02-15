@@ -9,7 +9,7 @@
 	import { templateStatus, templateStatusLabels } from '.';
 
 	let params = new SvelteURLSearchParams(page.url.searchParams);
-	let query = $state(params.get('q') ?? '');
+	let query = $state(params.get('query') ?? '');
 
 	const debounced = new Debounced(() => query, 350);
 
@@ -20,11 +20,11 @@
 	});
 
 	$effect(() => {
-		params.set('q', debounced.current);
+		params.set('query', debounced.current);
 	});
 </script>
 
-<div class="flex items-center gap-2 rounded-md bg-muted/50 p-4">
+<div class="flex items-center gap-2 rounded-md border border-muted bg-muted/50 p-2">
 	<div class="flex items-center px-2">
 		<SearchIcon class="mr-2 h-4 w-4 shrink-0 opacity-50" />
 		<Input
@@ -32,6 +32,7 @@
 			type="search"
 			placeholder="Search form templates..."
 			bind:value={query}
+			autofocus
 		/>
 	</div>
 
