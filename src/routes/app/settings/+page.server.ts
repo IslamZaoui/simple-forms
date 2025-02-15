@@ -137,8 +137,31 @@ const password = async (event: RequestEvent) => {
 	)
 }
 
+const deleteAccount = async (event: RequestEvent) => {
+	const session = event.locals.auth()
+	if (!session) {
+		redirect(302, REDIRECT_GUEST_URL)
+	}
+
+	await prisma.user.delete({
+		where: {
+			id: session.user.id
+		}
+	})
+
+	redirect(
+		REDIRECT_GUEST_URL,
+		{
+			type: 'success',
+			message: 'You have successfully deleted your account'
+		},
+		event
+	)
+}
+
 export const actions: Actions = {
 	name,
 	email,
-	password
+	password,
+	deleteAccount
 }

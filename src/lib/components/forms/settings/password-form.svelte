@@ -27,7 +27,12 @@
 	const { form: formData, enhance, delayed, message } = form
 </script>
 
-<form class="flex flex-col rounded-md bg-muted/50" action="?/password" method="POST" use:enhance>
+<form
+	class="flex flex-col rounded-md border border-muted bg-muted/50"
+	action="?/password"
+	method="POST"
+	use:enhance
+>
 	<div class="space-y-2 p-4">
 		<h2 class="text-2xl font-bold">Change Password</h2>
 

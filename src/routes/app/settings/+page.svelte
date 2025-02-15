@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { EmailForm, NameForm, PasswordForm } from '@/components/forms/settings'
+	import { DeleteAccountForm, EmailForm, NameForm, PasswordForm } from '@/components/forms/settings'
 	import type { Link } from '@/components/sidebar/page-slot'
 	import PageWrapper from '@/components/sidebar/page-slot/page-wrapper.svelte'
 	import * as Tabs from '@/components/ui/tabs'
@@ -18,7 +18,6 @@
 		<Tabs.List class="justify-start bg-muted/50">
 			<Tabs.Trigger value="general">General</Tabs.Trigger>
 			<Tabs.Trigger value="security">Security</Tabs.Trigger>
-			<Tabs.Trigger value="authentication">Authentication</Tabs.Trigger>
 			<Tabs.Trigger value="danger">Danger zone</Tabs.Trigger>
 		</Tabs.List>
 		<Tabs.Content class="space-y-4" value="general">
@@ -30,8 +29,8 @@
 			<PasswordForm {data} />
 		</Tabs.Content>
 
-		<Tabs.Content class="space-y-4" value="authentication"></Tabs.Content>
-
-		<Tabs.Content class="space-y-4" value="danger"></Tabs.Content>
+		<Tabs.Content class="space-y-4" value="danger">
+			<DeleteAccountForm />
+		</Tabs.Content>
 	</Tabs.Root>
 </PageWrapper>
