@@ -62,6 +62,15 @@ export async function setUserAsEmailVerifiedIfEmailMatches(userId: string, email
 	})
 }
 
+export async function getUserPasswordHash(userId: string) {
+	const user = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { passwordHash: true }
+	})
+
+	return user?.passwordHash
+}
+
 export async function updateUserPassword(userId: string, password: string) {
 	const passwordHash = await hashPassword(password)
 	await prisma.user.update({

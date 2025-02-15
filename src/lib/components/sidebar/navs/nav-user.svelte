@@ -8,6 +8,7 @@
 	import { goto } from '$app/navigation'
 	import { LOGOUT_URL } from '@/config/auth'
 	import type { UserWithoutSecrets } from '@/server/database'
+	import SettingsIcon from 'lucide-svelte/icons/settings'
 
 	interface Props {
 		user: UserWithoutSecrets
@@ -54,6 +55,11 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					{@render UserInfo()}
 				</DropdownMenu.Label>
+				<DropdownMenu.Separator />
+				<DropdownMenu.Item onclick={() => goto('/app/settings')}>
+					<SettingsIcon />
+					Account settings
+				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item onclick={() => goto(LOGOUT_URL)}>
 					<LogOut />

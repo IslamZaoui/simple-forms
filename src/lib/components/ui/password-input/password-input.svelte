@@ -3,22 +3,25 @@
 	import EyeOffIcon from 'lucide-svelte/icons/eye-off'
 	import { Input } from '@/components/ui/input'
 	import { Button } from '@/components/ui/button'
-	import type { HTMLInputAttributes } from 'svelte/elements'
+	import type { ClassValue, HTMLInputAttributes } from 'svelte/elements'
 	import type { WithElementRef } from 'bits-ui'
 
 	let {
 		ref = $bindable(null),
 		value = $bindable(),
+		parentClass,
 		class: className,
 		...restProps
-	}: WithElementRef<HTMLInputAttributes> = $props()
+	}: WithElementRef<HTMLInputAttributes> & {
+		parentClass?: ClassValue | null | undefined
+	} = $props()
 
 	let showPassword = $state(false)
 	let disabled = $derived(value === '' || value === undefined || restProps.disabled)
 	let type = $derived(showPassword ? 'text' : 'password')
 </script>
 
-<div class="relative">
+<div class={['relative', parentClass]}>
 	<Input {type} class={className} {...restProps} bind:ref bind:value />
 
 	<Button
