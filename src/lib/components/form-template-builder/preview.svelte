@@ -11,7 +11,7 @@
 	let { fields, template }: Props = $props()
 </script>
 
-<div class="flex-1 rounded-xl bg-muted/50 p-4">
+<div class="size-full flex-1 rounded-xl bg-muted/50 p-4">
 	<h3 class="text-2xl font-bold">Form Template Preview</h3>
 	<div class="flex h-full items-center justify-center p-4">
 		<Card.Root class="w-full max-w-[450px]">

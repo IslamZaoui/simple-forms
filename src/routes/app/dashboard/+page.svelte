@@ -11,5 +11,7 @@
 </script>
 
 <PageWrapper {links}>
-	<pre>{JSON.stringify(data, null, 4)}</pre>
+	<div class="size-full rounded-md bg-muted/50 p-4">
+		<pre class="text-wrap">{JSON.stringify(data, null, 4)}</pre>
+	</div>
 </PageWrapper>

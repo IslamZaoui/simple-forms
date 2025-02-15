@@ -30,7 +30,7 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action>
+			<AlertDialog.Action class="w-full">
 				{#snippet child({ props })}
 					<form action="?/deleteField" method="post" use:enhance>
 						<input type="hidden" name="fieldId" value={field.id} />

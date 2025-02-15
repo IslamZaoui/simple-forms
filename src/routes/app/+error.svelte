@@ -3,6 +3,7 @@
 	import { Button } from '@/components/ui/button'
 	import { page } from '$app/state'
 	import { PageWrapper } from '@/components/sidebar/page-slot'
+	import { REDIRECT_USER_URL } from '@/config/auth'
 </script>
 
 <PageWrapper links={[{ label: `Error ${page.status}` }]}>
@@ -16,8 +17,8 @@
 						{page.error?.details}
 					</p>
 				</div>
-				<Button class="flex-1" variant="default" href="/app/form-templates">
-					Go back To My Form Templates
+				<Button class="flex-1" variant="default" href={REDIRECT_USER_URL}>
+					Go back To Dashboard
 				</Button>
 			</div>
 		</div>

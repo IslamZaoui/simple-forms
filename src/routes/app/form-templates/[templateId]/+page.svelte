@@ -5,6 +5,7 @@
 	import { FormTemplateDropdownMenu } from '@/components/dropdown-menus'
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle'
 	import { Button } from '@/components/ui/button'
+	import * as Tabs from '@/components/ui/tabs'
 	import BookIcon from 'lucide-svelte/icons/book-check'
 
 	let { data } = $props()
@@ -60,6 +61,19 @@
 					<FormTemplateBuilder.Editor templateId={data.template.id} {fields} />
 					<FormTemplateBuilder.Preview template={data.template} {fields} />
 				</div>
+			{:else}
+				<Tabs.Root class="flex-1" value="editor">
+					<Tabs.List class="w-full bg-muted/50">
+						<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
+						<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
+					</Tabs.List>
+					<Tabs.Content class="h-full" value="editor">
+						<FormTemplateBuilder.Editor templateId={data.template.id} {fields} />
+					</Tabs.Content>
+					<Tabs.Content class="h-full" value="preview">
+						<FormTemplateBuilder.Preview template={data.template} {fields} />
+					</Tabs.Content>
+				</Tabs.Root>
 			{/if}
 		{/await}
 	</div>

@@ -4,4 +4,6 @@
 	let { data } = $props()
 </script>
 
-<LoginForm {data} />
+<div class="flex w-full items-center justify-center p-4">
+	<LoginForm {data} />
+</div>

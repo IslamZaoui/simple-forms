@@ -4,4 +4,6 @@
 	let { data } = $props()
 </script>
 
-<RegisterForm {data} />
+<div class="flex w-full items-center justify-center p-4">
+	<RegisterForm {data} />
+</div>

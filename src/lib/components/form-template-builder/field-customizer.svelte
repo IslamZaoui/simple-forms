@@ -14,10 +14,10 @@
 >
 	<div class="flex items-center gap-2">
 		<fieldLabel.Icon class="size-6 text-muted-foreground" />
-		<span class="text-muted-foreground">{fieldLabel.label}:</span>
+		<span class="hidden text-muted-foreground md:block">{fieldLabel.label}:</span>
 		{field.label}
 	</div>
-	<div class="space-x-2">
+	<div class="flex gap-2">
 		<EditFieldDialog {field} />
 		<DeleteFieldAlertDialog {field} />
 	</div>

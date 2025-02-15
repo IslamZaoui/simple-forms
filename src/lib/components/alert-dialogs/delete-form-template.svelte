@@ -26,7 +26,7 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-			<AlertDialog.Action>
+			<AlertDialog.Action class="w-full">
 				{#snippet child({ props })}
 					<form action="?/deleteForm" method="post" use:enhance>
 						<Button type="submit" {...props}>Delete Form Template</Button>
