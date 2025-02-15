@@ -15,8 +15,7 @@ export const getUserFormTemplatesItems = (templates: FormTemplate[]) => {
 	for (const template of templates) {
 		items.push({
 			title: template.title,
-			url: `/app/form-templates/${template.id}`,
-			hasAction: true
+			url: `/app/form-templates/${template.id}`
 		});
 	}
 

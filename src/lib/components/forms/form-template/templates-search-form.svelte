@@ -24,11 +24,11 @@
 	});
 </script>
 
-<div class="flex items-center gap-2 rounded-md border border-muted bg-muted/50 p-2">
+<div class="flex items-center gap-2 rounded-md border border-muted bg-muted/50 p-4">
 	<div class="flex items-center px-2">
-		<SearchIcon class="mr-2 h-4 w-4 shrink-0 opacity-50" />
+		<SearchIcon class="mr-4 h-4 w-4 shrink-0 opacity-50" />
 		<Input
-			class="flex h-10 w-full rounded-md py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+			class="flex h-10 w-[350px] rounded-md py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
 			type="search"
 			placeholder="Search form templates..."
 			bind:value={query}

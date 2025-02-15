@@ -2,21 +2,28 @@
 	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import type { FormTemplate } from '@prisma/client';
 	import TrashIcon from 'lucide-svelte/icons/trash';
-	import { Button } from '@/components/ui/button';
-	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
-	import { FormTemplateDialog } from '../dialogs';
+	import { FormTemplateDialog } from '@/components/dialogs';
 	import PenIcon from 'lucide-svelte/icons/pen';
-	import { DeleteFormTemplateAlertDialog } from '../alert-dialogs';
+	import { DeleteFormTemplateAlertDialog } from '@/components/alert-dialogs';
+	import type { Snippet } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
 
-	let { template }: { template: FormTemplate } = $props();
+	type Props = {
+		template: FormTemplate;
+		trigger: Snippet<[{ props: Record<string, unknown> }]>;
+	};
+
+	let { template, trigger }: Props = $props();
+
+	let open = $state(false);
+
+	afterNavigate(() => (open = false));
 </script>
 
-<DropdownMenu.Root>
+<DropdownMenu.Root bind:open>
 	<DropdownMenu.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} class="bg-muted/50" variant="outline" size="icon">
-				<EllipsisIcon />
-			</Button>
+			{@render trigger({ props })}
 		{/snippet}
 	</DropdownMenu.Trigger>
 

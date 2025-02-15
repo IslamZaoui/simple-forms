@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 	import type { Snippet } from 'svelte';
-	import { AddFieldDialog } from '../dialogs';
+	import { AddFieldDialog } from '@/components/dialogs';
 	import { afterNavigate } from '$app/navigation';
 	import { fieldLabels, type FieldLabels } from '@/config/form-builder';
 	import { FormTemplateFieldType } from '@prisma/client';

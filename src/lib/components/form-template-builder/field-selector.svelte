@@ -2,7 +2,7 @@
 	import type { FormTemplateField } from '@prisma/client';
 	import * as Fields from './fields';
 	import type { SuperForm } from 'sveltekit-superforms';
-	import type { FlashMessage } from '../providers';
+	import type { FlashMessage } from '@/components/providers';
 
 	interface Props {
 		form: SuperForm<

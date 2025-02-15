@@ -3,7 +3,7 @@ import z from 'zod';
 export const name = z
 	.string()
 	.min(5, 'Name must be at least 5 characters long')
-	.max(20, 'Name must be at most 50 characters long')
+	.max(64, 'Name must be at most 64 characters long')
 	.trim()
 	.optional();
 

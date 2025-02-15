@@ -3,12 +3,11 @@
 	import * as Sidebar from '@/components/ui/sidebar';
 	import type { UserWithoutSecrets } from '@/server/database';
 	import type { ComponentProps } from 'svelte';
-	import { ReusableSidebarGroup, type SidebarGroupItem } from '../sidebar-group';
+	import { ReusableSidebarGroup } from '../sidebar-group';
 	import { getUserFormTemplatesItems, userSpaceItems } from './groups';
 	import PlusIcon from 'lucide-svelte/icons/plus';
 	import { FormTemplateDialog } from '@/components/dialogs';
 	import type { FormTemplate } from '@prisma/client';
-	import EllipsisIcon from 'lucide-svelte/icons/ellipsis';
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
 		user: UserWithoutSecrets;
@@ -44,18 +43,11 @@
 			{#snippet action()}
 				<FormTemplateDialog>
 					{#snippet trigger({ props })}
-						<Sidebar.GroupAction {...props} title="Add Project">
+						<Sidebar.GroupAction class="border border-muted bg-muted/50 p-2" {...props} title="Add Project">
 							<PlusIcon /> <span class="sr-only">Add Form</span>
 						</Sidebar.GroupAction>
 					{/snippet}
 				</FormTemplateDialog>
-			{/snippet}
-
-			{#snippet menu()}
-				<Sidebar.MenuAction>
-					<EllipsisIcon />
-					<span class="sr-only">Add Project</span>
-				</Sidebar.MenuAction>
 			{/snippet}
 		</ReusableSidebarGroup>
 	</Sidebar.Content>

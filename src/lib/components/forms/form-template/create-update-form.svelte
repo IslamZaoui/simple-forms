@@ -8,6 +8,7 @@
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import { Textarea } from '@/components/ui/textarea';
 	import type { FormTemplate } from '@prisma/client';
+	import { get } from 'svelte/store';
 
 	interface Props {
 		data?: FormTemplate;
@@ -50,7 +51,12 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Form Slug <span class="text-destructive">*</span></Form.Label>
-				<Input type="text" placeholder="slug..." {...props} bind:value={$formData.slug} />
+				<Input
+					type="text"
+					placeholder="slug..."
+					{...props}
+					bind:value={() => $formData.slug, (v) => ($formData.slug = v.toLowerCase().replace(/[^a-z0-9]+/g, '-'))}
+				/>
 			{/snippet}
 		</Form.Control>
 		<Form.Description>This is a unique identifier for your form</Form.Description>

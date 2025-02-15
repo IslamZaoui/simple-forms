@@ -4,10 +4,10 @@ import { z } from 'zod';
 const baseFieldSchema = z.object({
 	label: z
 		.string({ required_error: 'Label is required' })
-		.min(2, 'Label must be at least 2 characters')
-		.max(32, 'Label must not exceed 32 characters')
+		.min(5, 'Label must be at least 5 characters')
+		.max(71, 'Label must not exceed 71 characters')
 		.trim(),
-	description: z.string().max(120, 'Description must not exceed 120 characters').trim().optional(),
+	description: z.string().max(255, 'Description must not exceed 255 characters').trim().optional(),
 	required: z.boolean({ required_error: 'Required is required' }).default(true),
 	placeholder: z.string().max(120, 'Placeholder should not exceed 120 characters').trim().optional(),
 	min: z.number().min(0, 'Minimum value cannot be less than 0').optional(),
@@ -56,13 +56,13 @@ export const formTemplateSchema = z.object({
 	title: z
 		.string({ required_error: 'Title is required' })
 		.min(5, 'Title must be at least 5 characters')
-		.max(50, 'Title must not exceed 50 characters')
+		.max(71, 'Title must not exceed 71 characters')
 		.trim(),
 	slug: z
 		.string({ required_error: 'Slug is required' })
-		.min(3, 'Slug must be at least 3 characters')
-		.max(50, 'Slug must not exceed 50 characters')
-		.regex(/^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$/, 'Slug must be like this "This-is-a-slug"')
+		.min(5, 'Slug must be at least 5 characters')
+		.max(71, 'Slug must not exceed 71 characters')
+		.regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must contain lowercase letters, numbers and hyphens between words')
 		.trim(),
-	details: z.string().max(120, 'Details must not exceed 120 characters').optional()
+	details: z.string().max(255, 'Details must not exceed 255 characters').optional()
 });

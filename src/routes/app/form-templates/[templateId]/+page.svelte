@@ -6,6 +6,7 @@
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '@/components/ui/tabs';
+	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
 	import BookIcon from 'lucide-svelte/icons/book-check';
 
 	let { data } = $props();
@@ -26,7 +27,7 @@
 <PageWrapper {links}>
 	<div class="flex h-full flex-col gap-4">
 		<div
-			class="flex max-h-[75px] w-full flex-1 items-center justify-between gap-4 rounded-xl border border-muted bg-muted/50 p-4"
+			class="flex max-h-[75px] w-full flex-1 items-center justify-between gap-4 rounded-md border border-muted bg-muted/50 p-4"
 		>
 			<h2 class="text-2xl font-bold">
 				<span class="text-muted-foreground">{!data.template.published ? 'Draft: ' : ''}</span>
@@ -41,12 +42,18 @@
 						{/if}
 					</Button>
 				{/if}
-				<FormTemplateDropdownMenu template={data.template} />
+				<FormTemplateDropdownMenu template={data.template}>
+					{#snippet trigger({ props })}
+						<Button {...props} class="bg-muted/50" variant="outline" size="icon">
+							<EllipsisIcon />
+						</Button>
+					{/snippet}
+				</FormTemplateDropdownMenu>
 			</div>
 		</div>
 		{#await data.getFields}
 			<div
-				class="flex size-full flex-1 items-center justify-center gap-2 rounded-xl border border-muted bg-muted/50 p-4"
+				class="flex size-full flex-1 items-center justify-center gap-2 rounded-md border border-muted bg-muted/50 p-4"
 			>
 				<SpinnerIcon class="animate-spin" />
 				<span>Loading form fields...</span>

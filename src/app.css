@@ -98,7 +98,7 @@
 	}
 	body {
 		font-family: 'Readex Pro Variable', sans-serif;
-		@apply bg-background text-foreground;
+		@apply select-none bg-background text-foreground;
 	}
 }
 

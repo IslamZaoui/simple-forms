@@ -23,7 +23,12 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<Form.Label>Code <span class="text-destructive">*</span></Form.Label>
-				<InputOTP.Root {...props} bind:value={$formData.code} maxlength={6} pattern="^[A-Z0-9]+$">
+				<InputOTP.Root
+					{...props}
+					maxlength={6}
+					pattern="^[A-Za-z0-9]+$"
+					bind:value={() => $formData.code, (v) => ($formData.code = v.toUpperCase())}
+				>
 					{#snippet children({ cells })}
 						<InputOTP.Group>
 							{#each cells.slice(0, 3) as cell}

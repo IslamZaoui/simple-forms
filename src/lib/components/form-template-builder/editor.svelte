@@ -13,7 +13,7 @@
 	let { templateId, fields }: Props = $props();
 </script>
 
-<div class="flex size-full flex-1 flex-col gap-4 rounded-xl border border-muted bg-muted/50 p-4">
+<div class="flex size-full flex-1 flex-col gap-4 rounded-md border border-muted bg-muted/50 p-4">
 	<h3 class="text-2xl font-bold">Form Fields Editor</h3>
 	{#each fields as field (field.id)}
 		<FieldCustomizer {field} />

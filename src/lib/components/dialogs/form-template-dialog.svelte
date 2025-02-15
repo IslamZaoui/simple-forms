@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Dialog from '@/components/ui/dialog';
-	import { CreateUpdateFormTemplateForm } from '../forms/form-template';
+	import { CreateUpdateFormTemplateForm } from '@/components/forms/form-template';
 	import type { FormTemplate } from '@prisma/client';
 	import type { Snippet } from 'svelte';
 	import { afterNavigate } from '$app/navigation';
