@@ -14,8 +14,10 @@ import { getUserPasswordHash, isEmailTaken, updateUserPassword } from '@/server/
 import { verifyPasswordHash } from '@/server/auth/utils'
 import { prisma } from '@/server/database'
 import { sendVerificationEmail } from '@/server/mail/email-verification'
+import { createRateLimiter } from '@/server/rate-limiter'
+import { formatSeconds } from '@/utils/time'
 import { redirect } from 'sveltekit-flash-message/server'
-import { fail, setError, superValidate } from 'sveltekit-superforms'
+import { fail, setError, setMessage, superValidate } from 'sveltekit-superforms'
 import { zod } from 'sveltekit-superforms/adapters'
 import type { Actions, PageServerLoad, RequestEvent } from './$types'
 
@@ -37,6 +39,14 @@ export const load: PageServerLoad = async (event) => {
 	}
 }
 
+const nameLimiter = createRateLimiter({
+	prefix: 'change-name',
+	rates: {
+		IP: [5, 'm'],
+		IPUA: [3, 'm']
+	}
+})
+
 const name = async (event: RequestEvent) => {
 	const session = event.locals.auth()
 	if (!session) {
@@ -46,6 +56,15 @@ const name = async (event: RequestEvent) => {
 	const form = await superValidate(event, zod(changeNameSchema))
 	if (!form.valid) {
 		return fail(400, { form })
+	}
+
+	const status = await nameLimiter.check(event)
+	if (status.limited) {
+		return setMessage(form, {
+			type: 'error',
+			message: 'Too many requests',
+			description: `Try again in ${status.retryAfter}s`
+		})
 	}
 
 	await prisma.user.update({
@@ -66,6 +85,14 @@ const name = async (event: RequestEvent) => {
 	)
 }
 
+const emailLimiter = createRateLimiter({
+	prefix: 'change-email',
+	rates: {
+		IP: [5, 'd'],
+		IPUA: [3, 'd']
+	}
+})
+
 const email = async (event: RequestEvent) => {
 	const session = event.locals.auth()
 	if (!session) {
@@ -75,6 +102,15 @@ const email = async (event: RequestEvent) => {
 	const form = await superValidate(event, zod(changeEmailSchema))
 	if (!form.valid) {
 		return fail(400, { form })
+	}
+
+	const status = await emailLimiter.check(event)
+	if (status.limited) {
+		return setMessage(form, {
+			type: 'error',
+			message: 'Too many requests',
+			description: `Try again in ${formatSeconds(status.retryAfter)}`
+		})
 	}
 
 	if (await isEmailTaken(form.data.email)) {
@@ -95,6 +131,14 @@ const email = async (event: RequestEvent) => {
 	)
 }
 
+const passwordLimiter = createRateLimiter({
+	prefix: 'change-password',
+	rates: {
+		IP: [5, '30m'],
+		IPUA: [3, '30m']
+	}
+})
+
 const password = async (event: RequestEvent) => {
 	const session = event.locals.auth()
 	if (!session) {
@@ -104,6 +148,15 @@ const password = async (event: RequestEvent) => {
 	const form = await superValidate(event, zod(changePasswordSchema))
 	if (!form.valid) {
 		return fail(400, { form })
+	}
+
+	const status = await passwordLimiter.check(event)
+	if (status.limited) {
+		return setMessage(form, {
+			type: 'error',
+			message: 'Too many requests',
+			description: `Try again in ${formatSeconds(status.retryAfter)}`
+		})
 	}
 
 	const passwordHash = await getUserPasswordHash(session.user.id)
