@@ -1,9 +1,4 @@
-import {
-	REDIRECT_AFTER_LOGIN_URL,
-	REDIRECT_AFTER_REGISTER_URL,
-	REDIRECT_GUEST_URL,
-	REDIRECT_USER_URL
-} from '@/config/auth'
+import { REDIRECT_AFTER_LOGIN_URL, REDIRECT_GUEST_URL, REDIRECT_USER_URL } from '@/config/auth'
 import { github } from '@/server/auth/oauth'
 import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session'
 import { isEmailTaken } from '@/server/auth/user'
@@ -41,6 +36,7 @@ const getGithubEmail = async (accessToken: string): Promise<string> => {
 type GithubUser = {
 	id: number
 	login: string
+	name: string | null | undefined
 }
 
 const getGithubUser = async (accessToken: string): Promise<GithubUser> => {
@@ -58,7 +54,8 @@ const getGithubUser = async (accessToken: string): Promise<GithubUser> => {
 
 	return {
 		id: user.id,
-		login: user.login
+		login: user.login,
+		name: user.name
 	}
 }
 
@@ -163,8 +160,9 @@ export const GET: RequestHandler = async (event) => {
 	const user = await prisma.user.create({
 		data: {
 			githubId: githubUser.id,
-			name: githubUser.login,
-			email
+			name: githubUser.name ?? githubUser.login,
+			email,
+			emailVerified: true
 		}
 	})
 
@@ -175,11 +173,10 @@ export const GET: RequestHandler = async (event) => {
 	setSessionTokenCookie(event, sessionToken, session.expiresAt)
 
 	redirect(
-		REDIRECT_AFTER_REGISTER_URL,
+		REDIRECT_USER_URL,
 		{
 			type: 'success',
-			message: 'Signed up successfully',
-			description: `Verify your email to continue`
+			message: 'Signed up successfully'
 		},
 		event
 	)
