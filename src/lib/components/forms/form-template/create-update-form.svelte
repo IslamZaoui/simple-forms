@@ -8,8 +8,7 @@
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import { Textarea } from '@/components/ui/textarea';
 	import type { FormTemplate } from '@prisma/client';
-	import { get } from 'svelte/store';
-
+	
 	interface Props {
 		data?: FormTemplate;
 	}

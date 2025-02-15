@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import { AddFieldDialog } from '@/components/dialogs';
 	import { afterNavigate } from '$app/navigation';
-	import { fieldLabels, type FieldLabels } from '@/config/form-builder';
+	import { fieldLabels } from '@/config/form-builder';
 	import { FormTemplateFieldType } from '@prisma/client';
 
 	interface Props {

@@ -8,7 +8,7 @@
 	interface Props {
 		form: SuperForm<
 			{
-				[x: string]: any;
+				[x: string]: unknown;
 			},
 			FlashMessage
 		>;
