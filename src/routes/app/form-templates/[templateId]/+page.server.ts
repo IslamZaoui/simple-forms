@@ -1,8 +1,6 @@
 import { REDIRECT_GUEST_URL } from '@/config/auth';
-import { reorderFieldSchema } from '@/schemas/field';
 import { prisma } from '@/server/database';
 import { createRateLimiter } from '@/server/rate-limiter';
-import { arrayMove } from '@dnd-kit-svelte/sortable';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import type { Actions, PageServerLoad } from './$types';
@@ -24,6 +22,7 @@ const fieldLimiter = createRateLimiter({
 });
 
 export const load: PageServerLoad = async (event) => {
+	event.depends('app:template', 'app:fields');
 	const { user } = await event.parent();
 
 	const { templateId } = event.params;
@@ -37,76 +36,20 @@ export const load: PageServerLoad = async (event) => {
 		return error(404, 'Template not found');
 	}
 
-	const getFields = prisma.formTemplateField.findMany({
-		where: {
-			templateId
-		},
-		orderBy: {
-			order: 'asc'
-		}
-	});
-
 	return {
 		template,
-		getFields
+		fields: await prisma.formTemplateField.findMany({
+			where: {
+				templateId
+			},
+			orderBy: {
+				order: 'asc'
+			}
+		})
 	};
 };
 
 export const actions: Actions = {
-	reorderField: async (event) => {
-		const session = event.locals.auth();
-		if (!session) {
-			return redirect(302, REDIRECT_GUEST_URL);
-		}
-
-		const form = await event.request.formData();
-		const data = reorderFieldSchema.safeParse(Object.fromEntries(form));
-		if (!data.success) {
-			return {};
-		}
-
-		const { templateId } = event.params;
-		const { newIndex, oldIndex } = data.data;
-
-		const existingTemplate = await prisma.formTemplate.findUnique({
-			where: {
-				id: templateId,
-				userId: session.userId
-			},
-			include: {
-				fields: {
-					orderBy: {
-						order: 'asc'
-					},
-					select: {
-						id: true,
-						order: true
-					}
-				}
-			}
-		});
-
-		if (!existingTemplate) {
-			return {};
-		}
-
-		await prisma.$transaction(async (tx) => {
-			const reorderedFields = arrayMove(existingTemplate.fields, oldIndex, newIndex);
-			for (const [index, field] of reorderedFields.entries()) {
-				await tx.formTemplateField.update({
-					where: {
-						id: field.id
-					},
-					data: {
-						order: index
-					}
-				});
-			}
-		});
-
-		return {};
-	},
-
 	deleteForm: async (event) => {
 		const session = event.locals.auth();
 		if (!session) {

@@ -51,33 +51,24 @@
 				</FormTemplateDropdownMenu>
 			</div>
 		</div>
-		{#await data.getFields}
-			<div
-				class="flex size-full flex-1 items-center justify-center gap-2 rounded-md border border-muted bg-muted/50 p-4"
-			>
-				<SpinnerIcon class="animate-spin" />
-				<span>Loading form fields...</span>
+		{#if !isMobile.current}
+			<div class="flex h-full gap-4">
+				<FormTemplateBuilder.Editor templateId={data.template.id} fields={data.fields} />
+				<FormTemplateBuilder.Preview template={data.template} fields={data.fields} />
 			</div>
-		{:then fields}
-			{#if !isMobile.current}
-				<div class="flex h-full gap-4">
-					<FormTemplateBuilder.Editor templateId={data.template.id} {fields} />
-					<FormTemplateBuilder.Preview template={data.template} {fields} />
-				</div>
-			{:else}
-				<Tabs.Root class="flex flex-1 flex-col" value="editor">
-					<Tabs.List class="w-full border border-muted bg-muted/50">
-						<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
-						<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
-					</Tabs.List>
-					<Tabs.Content class="flex-1" value="editor">
-						<FormTemplateBuilder.Editor templateId={data.template.id} {fields} />
-					</Tabs.Content>
-					<Tabs.Content class="flex-1" value="preview">
-						<FormTemplateBuilder.Preview template={data.template} {fields} />
-					</Tabs.Content>
-				</Tabs.Root>
-			{/if}
-		{/await}
+		{:else}
+			<Tabs.Root class="flex flex-1 flex-col" value="editor">
+				<Tabs.List class="w-full border border-muted bg-muted/50">
+					<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
+					<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
+				</Tabs.List>
+				<Tabs.Content class="flex-1" value="editor">
+					<FormTemplateBuilder.Editor templateId={data.template.id} fields={data.fields} />
+				</Tabs.Content>
+				<Tabs.Content class="flex-1" value="preview">
+					<FormTemplateBuilder.Preview template={data.template} fields={data.fields} />
+				</Tabs.Content>
+			</Tabs.Root>
+		{/if}
 	</div>
 </PageWrapper>

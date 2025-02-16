@@ -38,7 +38,6 @@
 			<fieldLabel.Icon class="size-6 text-muted-foreground" />
 			<span class="hidden text-muted-foreground md:block">{fieldLabel.label}:</span>
 			{field.label}
-			{field.order}
 		</div>
 		<div class="flex gap-2">
 			<EditFieldDialog {field} />

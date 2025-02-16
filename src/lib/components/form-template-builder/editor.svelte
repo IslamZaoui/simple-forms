@@ -6,10 +6,10 @@
 	import { AddFieldDropdownMenu } from '@/components/dropdown-menus';
 	import { DndContext, DragOverlay, type DragEndEvent, type DragStartEvent } from '@dnd-kit-svelte/core';
 	import { dropAnimation, sensors } from '@/utils/dnd';
-	import { SortableContext } from '@dnd-kit-svelte/sortable';
+	import { SortableContext, arrayMove } from '@dnd-kit-svelte/sortable';
 	import { Droppable } from '../dnd';
 	import { crossfade } from 'svelte/transition';
-	import { enhance } from '$app/forms';
+	import { invalidate } from '$app/navigation';
 
 	type Props = {
 		templateId: string;
@@ -27,25 +27,43 @@
 
 	const [send, recieve] = crossfade({ duration: 100 });
 
-	let formEL = $state<HTMLFormElement | null>();
-	let newIndex = $state(0);
-	let oldIndex = $state(0);
-
 	function onDragEnd({ active, over }: DragEndEvent) {
-		if (!over) return;
-		if (active.id === over.id) return;
+		if (!over || over.id === active.id) {
+			activeId = null;
+			return;
+		}
 
-		newIndex = fields.findIndex((field) => field.id === over.id);
-		oldIndex = fields.findIndex((field) => field.id === active.id);
+		const newIndex = fields.findIndex((field) => field.id === over.id);
+		const oldIndex = fields.findIndex((field) => field.id === active.id);
 
-		formEL?.requestSubmit();
+		fields = arrayMove(fields, oldIndex, newIndex);
+		saveOrder(fields);
+
 		activeId = null;
+	}
+
+	async function saveOrder(fields: FormTemplateField[]) {
+		const reorderedFields = fields.map((field, index) => ({
+			id: field.id,
+			order: index
+		}));
+
+		const response = await fetch(`/api/form-template/${templateId}/field/reorder`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ fields: reorderedFields })
+		});
+
+		if (!response.ok) {
+			console.error('Failed to reorder fields');
+			return;
+		}
+
+		invalidate('app:fields');
 	}
 </script>
 
 <div class="flex size-full flex-1 flex-col gap-4 rounded-md border border-muted bg-muted/50 p-4">
-	<h3 class="text-2xl font-bold">Form Fields Editor</h3>
-
 	{#if fields.length > 0}
 		<DndContext {sensors} {onDragStart} {onDragEnd}>
 			<SortableContext items={fields}>
@@ -78,9 +96,4 @@
 			</Button>
 		{/snippet}
 	</AddFieldDropdownMenu>
-
-	<form bind:this={formEL} use:enhance hidden action="?/reorderField" method="post">
-		<input type="hidden" name="newIndex" value={newIndex} />
-		<input type="hidden" name="oldIndex" value={oldIndex} />
-	</form>
 </div>

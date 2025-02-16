@@ -32,10 +32,15 @@ const limiter = createRateLimiter({
 });
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
+	if (event.request.method !== 'GET' && event.request.method !== 'OPTIONS') {
+		return resolve(event);
+	}
+
 	const state = await limiter.check(event);
 	if (state.limited) {
 		return error(429, `Too many requests, try again in ${state.retryAfter}s`);
 	}
+
 	return resolve(event);
 };
 
