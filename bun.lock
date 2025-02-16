@@ -7,6 +7,8 @@
         "prisma": "^6.3.1",
       },
       "devDependencies": {
+        "@dnd-kit-svelte/core": "^0.0.7",
+        "@dnd-kit-svelte/sortable": "^0.0.7",
         "@eslint/compat": "^1.2.6",
         "@eslint/js": "^9.19.0",
         "@fontsource-variable/readex-pro": "^5.1.1",
@@ -67,6 +69,14 @@
     "@ark/util": ["@ark/util@0.39.0", "", {}, "sha512-90APHVklk8BP4kku7hIh1BgrhuyKYqoZ4O7EybtFRo7cDl9mIyc/QUbGvYDg//73s0J2H0I/gW9pzroA1R4IBQ=="],
 
     "@babel/runtime": ["@babel/runtime@7.26.7", "", { "dependencies": { "regenerator-runtime": "^0.14.0" } }, "sha512-AOPI3D+a8dXnja+iwsUqGRjr1BbZIe771sXdapOtYI531gSqpi92vXivKcq2asu/DFpdl1ceFAKZyRzK2PCVcQ=="],
+
+    "@dnd-kit-svelte/accessibility": ["@dnd-kit-svelte/accessibility@0.0.7", "", { "dependencies": { "@dnd-kit-svelte/utilities": "latest", "esm-env": "^1.2.2", "runed": "^0.23.0" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-dkv0et2BPr8EEon/XrYeBW01hJbCZign0iztAsRsg2gg5L+9fOvt998Cs+kuAAa8ci+Sw2Me1OGGLkdApaYxZQ=="],
+
+    "@dnd-kit-svelte/core": ["@dnd-kit-svelte/core@0.0.7", "", { "dependencies": { "@dnd-kit-svelte/accessibility": "latest", "@dnd-kit-svelte/utilities": "latest", "runed": "^0.23.0", "svelte-toolbelt": "^0.7.0" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-h9DxKtaLmjT3UF4kxnh4QR9H25Yle5ZeTkBPkdJUBMBYWU6ANhpo5TKDo+nzD5R2m7nNaYYw/x8eqKIRFo4+xg=="],
+
+    "@dnd-kit-svelte/sortable": ["@dnd-kit-svelte/sortable@0.0.7", "", { "dependencies": { "@dnd-kit-svelte/core": "latest", "@dnd-kit-svelte/utilities": "latest", "runed": "^0.23.0", "svelte-toolbelt": "^0.7.0" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-0T0A/nFRl0qGFxHq7kBemkWI8gK8pgARO4mr324gf5ubATDGVMnNYil4TLNl0QDgeBtFE9k+7yoIfz0yiWtLgA=="],
+
+    "@dnd-kit-svelte/utilities": ["@dnd-kit-svelte/utilities@0.0.7", "", { "dependencies": { "svelte-toolbelt": "^0.7.0" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-ZKma6g9CwFYVKxvkh0zNXk2ZyaKlDyMYsC8aMd0uiWtKZrW6e8ixvbGhHPwh4vyc4nt+Timr1kg1M6c6SrN9Nw=="],
 
     "@emnapi/core": ["@emnapi/core@1.3.1", "", { "dependencies": { "@emnapi/wasi-threads": "1.0.1", "tslib": "^2.4.0" } }, "sha512-pVGjBIt1Y6gg3EJN8jTcfpP/+uuRksIo055oE/OBkDNcjZqVbfkWCksG1Jp4yZnj3iKWyWX8fdG/j6UDYPbFog=="],
 

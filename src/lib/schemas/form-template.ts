@@ -4,7 +4,7 @@ import { z } from 'zod';
 const baseFieldSchema = z.object({
 	label: z
 		.string({ required_error: 'Label is required' })
-		.min(5, 'Label must be at least 5 characters')
+		.min(1, 'Label must not be empty')
 		.max(71, 'Label must not exceed 71 characters')
 		.trim(),
 	description: z.string().max(255, 'Description must not exceed 255 characters').trim().optional(),
