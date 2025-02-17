@@ -17,9 +17,16 @@
 	};
 
 	let { templateId, fields }: Props = $props();
+	let tempId = $state(templateId);
+	let tempFields = $state(fields);
+
+	$effect(() => {
+		tempId = templateId;
+		tempFields = fields;
+	});
 
 	let activeId = $state<string | null>();
-	let activeItem = $derived(fields.find((field) => field.id === activeId));
+	let activeItem = $derived(tempFields.find((field) => field.id === activeId));
 
 	function onDragStart(event: DragStartEvent) {
 		activeId = event.active.id as string;
@@ -33,11 +40,11 @@
 			return;
 		}
 
-		const newIndex = fields.findIndex((field) => field.id === over.id);
-		const oldIndex = fields.findIndex((field) => field.id === active.id);
+		const newIndex = tempFields.findIndex((field) => field.id === over.id);
+		const oldIndex = tempFields.findIndex((field) => field.id === active.id);
 
-		fields = arrayMove(fields, oldIndex, newIndex);
-		saveOrder(fields);
+		tempFields = arrayMove(tempFields, oldIndex, newIndex);
+		saveOrder(tempFields);
 
 		activeId = null;
 	}
@@ -48,28 +55,28 @@
 			order: index
 		}));
 
-		const response = await fetch(`/api/form-template/${templateId}/field/reorder`, {
+		const { ok } = await fetch(`/api/form-template/${templateId}/field/reorder`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ fields: reorderedFields })
 		});
 
-		if (!response.ok) {
+		if (!ok) {
 			console.error('Failed to reorder fields');
 			return;
 		}
 
-		invalidate('app:fields');
+		invalidate('app:template');
 	}
 </script>
 
 <div class="flex size-full flex-1 flex-col gap-4 rounded-md border border-muted bg-muted/50 p-4">
-	{#if fields.length > 0}
+	{#if tempFields.length > 0}
 		<DndContext {sensors} {onDragStart} {onDragEnd}>
-			<SortableContext items={fields}>
-				<Droppable id={templateId}>
+			<SortableContext items={tempFields}>
+				<Droppable id={tempId}>
 					<div class="grid gap-2">
-						{#each fields as field (field.id)}
+						{#each tempFields as field (field.id)}
 							<div in:recieve={{ key: field.id }} out:send={{ key: field.id }}>
 								<FieldCustomizer {field} />
 							</div>

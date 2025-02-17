@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { PageWrapper, type Link } from '@/components/sidebar/page-slot';
-	import * as FormTemplateBuilder from '@/components/form-template-builder';
 	import { IsMobile } from '@/hooks/is-mobile.svelte';
 	import { FormTemplateDropdownMenu } from '@/components/dropdown-menus';
-	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '@/components/ui/tabs';
 	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
 	import BookIcon from 'lucide-svelte/icons/book-check';
+	import { Editor, Preview } from '@/components/form-template-builder';
 
 	let { data } = $props();
 
@@ -53,8 +52,8 @@
 		</div>
 		{#if !isMobile.current}
 			<div class="flex h-full gap-4">
-				<FormTemplateBuilder.Editor templateId={data.template.id} fields={data.fields} />
-				<FormTemplateBuilder.Preview template={data.template} fields={data.fields} />
+				<Editor templateId={data.template.id} fields={data.fields} />
+				<Preview template={data.template} fields={data.fields} />
 			</div>
 		{:else}
 			<Tabs.Root class="flex flex-1 flex-col" value="editor">
@@ -63,10 +62,10 @@
 					<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
 				</Tabs.List>
 				<Tabs.Content class="flex-1" value="editor">
-					<FormTemplateBuilder.Editor templateId={data.template.id} fields={data.fields} />
+					<Editor templateId={data.template.id} fields={data.fields} />
 				</Tabs.Content>
 				<Tabs.Content class="flex-1" value="preview">
-					<FormTemplateBuilder.Preview template={data.template} fields={data.fields} />
+					<Preview template={data.template} fields={data.fields} />
 				</Tabs.Content>
 			</Tabs.Root>
 		{/if}

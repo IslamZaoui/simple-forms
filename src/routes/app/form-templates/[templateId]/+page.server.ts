@@ -22,7 +22,7 @@ const fieldLimiter = createRateLimiter({
 });
 
 export const load: PageServerLoad = async (event) => {
-	event.depends('app:template', 'app:fields');
+	event.depends('app:template');
 	const { user } = await event.parent();
 
 	const { templateId } = event.params;
