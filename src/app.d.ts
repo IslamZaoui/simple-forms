@@ -1,4 +1,4 @@
-import { FlashMessage } from '@/components/providers';
+import { Flash } from '@/components/providers';
 import type { AuthData } from '@/server/auth/session';
 
 declare global {
@@ -10,12 +10,12 @@ declare global {
 			auth(): AuthData | null;
 		}
 		interface PageData {
-			flash?: FlashMessage;
+			flash?: Flash;
 		}
 		// interface PageState {}
 		// interface Platform {}
 		namespace Superforms {
-			type Message = FlashMessage;
+			type Message = Flash;
 		}
 	}
 }

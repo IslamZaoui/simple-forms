@@ -2,7 +2,7 @@
 	import { Input } from '@/components/ui/input';
 	import type { FormTemplateField } from '@prisma/client';
 	import * as Form from '@/components/ui/form';
-	import type { FlashMessage } from '@/components/providers';
+	import type { Flash } from '@/components/providers';
 	import type { SuperForm } from 'sveltekit-superforms';
 
 	interface Props {
@@ -10,7 +10,7 @@
 			{
 				[x: string]: unknown;
 			},
-			FlashMessage
+			Flash
 		>;
 		fieldData: unknown;
 		field: FormTemplateField;

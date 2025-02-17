@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { FormTemplateField } from '@prisma/client';
 	import * as Form from '@/components/ui/form';
-	import type { FlashMessage } from '@/components/providers';
+	import type { Flash } from '@/components/providers';
 	import type { SuperForm } from 'sveltekit-superforms';
 	import { Textarea } from '@/components/ui/textarea';
 
@@ -10,7 +10,7 @@
 			{
 				[x: string]: unknown;
 			},
-			FlashMessage
+			Flash
 		>;
 		fieldData: unknown;
 		field: FormTemplateField;

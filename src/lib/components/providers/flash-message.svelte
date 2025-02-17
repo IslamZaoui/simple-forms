@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	export type FlashMessage = {
+	export type Flash = {
 		type: 'success' | 'error' | 'warning' | 'info';
 		message: string;
 		description?: string;

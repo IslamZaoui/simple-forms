@@ -1,1 +1,1 @@
-export { default as FlashMessageProvider, type FlashMessage } from './flash-message.svelte';
+export { default as FlashMessageProvider, type Flash } from './flash-message.svelte';
