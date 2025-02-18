@@ -10,20 +10,10 @@ import {
 import { invalidateUserPasswordResetSessions } from '@/server/auth/password-reset';
 import { updateUserVerifiedEmail } from '@/server/auth/user';
 import { sendVerificationEmail } from '@/server/mail/email-verification';
-import { createRateLimiter } from '@/server/rate-limiter';
-import { formatSeconds } from '@/utils/time';
 import { redirect } from 'sveltekit-flash-message/server';
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
-
-const limiter = createRateLimiter({
-	prefix: 'verify-email',
-	rates: {
-		IP: [5, '30m'],
-		IPUA: [3, '30m']
-	}
-});
 
 export const load: PageServerLoad = async (event) => {
 	const session = event.locals.auth();
@@ -62,23 +52,6 @@ export const actions: Actions = {
 		const form = await superValidate(event, zod(verifyEmailSchema));
 		if (!form.valid) {
 			return fail(400, { form });
-		}
-
-		if (limiter) {
-			const state = await limiter.check(event);
-			if (state.limited) {
-				return message(
-					form,
-					{
-						type: 'error',
-						message: 'Too many requests',
-						description: `Try again in ${formatSeconds(state.retryAfter)}`
-					},
-					{
-						status: 429
-					}
-				);
-			}
 		}
 
 		if (Date.now() >= request.expiresAt.getTime()) {

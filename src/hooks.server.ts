@@ -1,5 +1,6 @@
 import { deleteSessionTokenCookie, setSessionTokenCookie, validateSessionToken } from '@/server/auth/session';
 import { createRateLimiter } from '@/server/rate-limiter';
+import { formatSeconds } from '@/utils/time';
 import { error, type Handle } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
@@ -26,19 +27,15 @@ const authHandle: Handle = async ({ event, resolve }) => {
 const limiter = createRateLimiter({
 	prefix: 'global',
 	rates: {
-		IP: [120, 'm'],
-		IPUA: [60, 'm']
+		IP: [100, 's'],
+		IPUA: [40, 's']
 	}
 });
 
 const rateLimitHandle: Handle = async ({ event, resolve }) => {
-	if (event.request.method !== 'GET' && event.request.method !== 'OPTIONS') {
-		return resolve(event);
-	}
-
 	const state = await limiter.check(event);
 	if (state.limited) {
-		return error(429, `Too many requests, try again in ${state.retryAfter}s`);
+		return error(429, `Too many requests, try again in ${formatSeconds(state.retryAfter)}.`);
 	}
 
 	return resolve(event);

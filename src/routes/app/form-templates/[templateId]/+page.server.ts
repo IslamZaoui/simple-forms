@@ -1,25 +1,8 @@
 import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { prisma } from '@/server/database';
-import { createRateLimiter } from '@/server/rate-limiter';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import type { Actions, PageServerLoad } from './$types';
-
-const formLimiter = createRateLimiter({
-	prefix: 'delete-form-template',
-	rates: {
-		IP: [20, 'm'],
-		IPUA: [10, 'm']
-	}
-});
-
-const fieldLimiter = createRateLimiter({
-	prefix: 'delete-field-template',
-	rates: {
-		IP: [20, 'm'],
-		IPUA: [10, 'm']
-	}
-});
 
 export const load: PageServerLoad = async (event) => {
 	event.depends('app:template');
@@ -57,20 +40,6 @@ export const actions: Actions = {
 		}
 
 		const { templateId } = event.params;
-
-		const status = await formLimiter.check(event);
-		if (status.limited) {
-			return redirect(
-				`/app/form-templates/${templateId}`,
-				{
-					type: 'error',
-					message: 'Too many requests',
-					description: `Try again in ${status.retryAfter}s`
-				},
-				event
-			);
-		}
-
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
@@ -107,20 +76,6 @@ export const actions: Actions = {
 		}
 
 		const { templateId } = event.params;
-
-		const status = await fieldLimiter.check(event);
-		if (status.limited) {
-			return redirect(
-				`/app/form-templates/${templateId}`,
-				{
-					type: 'error',
-					message: 'Too many requests',
-					description: `Try again in ${status.retryAfter}s`
-				},
-				event
-			);
-		}
-
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
