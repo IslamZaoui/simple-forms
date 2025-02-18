@@ -8,8 +8,10 @@ import {
 import { generateSessionToken } from '@/server/auth/session';
 import { getUserByEmail } from '@/server/auth/user';
 import { sendPasswordResetEmail } from '@/server/mail/password-reset';
+import { forgotPasswordRateLimiter } from '@/server/rate-limiter/limiters/email';
+import { formatSeconds } from '@/utils/time';
 import { redirect } from '@sveltejs/kit';
-import { fail, setError, superValidate } from 'sveltekit-superforms';
+import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -37,6 +39,15 @@ export const actions: Actions = {
 		const existingUser = await getUserByEmail(form.data.email);
 		if (!existingUser) {
 			return setError(form, 'email', 'User not found');
+		}
+
+		const status = await forgotPasswordRateLimiter?.check(event);
+		if (status && status.limited) {
+			return message(form, {
+				type: 'error',
+				message: 'Too many requests',
+				description: `try again after ${formatSeconds(status.retryAfter)}.`
+			});
 		}
 
 		await invalidateUserPasswordResetSessions(existingUser.id);

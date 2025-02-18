@@ -22,7 +22,7 @@ export async function createUser(data: { name?: string; email: string; password:
 }
 
 export async function getValidUser(email: string, password: string) {
-	const user = await prisma.user.findUnique({ where: { email } });
+	const user = await prisma.user.findUnique({ where: { email }, select: { id: true, passwordHash: true } });
 
 	if (!user) {
 		return null;

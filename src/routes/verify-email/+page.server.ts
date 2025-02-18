@@ -10,6 +10,8 @@ import {
 import { invalidateUserPasswordResetSessions } from '@/server/auth/password-reset';
 import { updateUserVerifiedEmail } from '@/server/auth/user';
 import { sendVerificationEmail } from '@/server/mail/email-verification';
+import { verifyEmailRateLimiter } from '@/server/rate-limiter/limiters/email';
+import { formatSeconds } from '@/utils/time';
 import { redirect } from 'sveltekit-flash-message/server';
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -55,6 +57,15 @@ export const actions: Actions = {
 		}
 
 		if (Date.now() >= request.expiresAt.getTime()) {
+			const status = await verifyEmailRateLimiter?.check(event);
+			if (status && status.limited) {
+				return message(form, {
+					type: 'error',
+					message: 'Too many requests',
+					description: `try again after ${formatSeconds(status.retryAfter)}.`
+				});
+			}
+
 			request = await createEmailVerificationRequest(request.userId, request.email);
 			await sendVerificationEmail(request.email, request.code);
 			return message(form, {
@@ -86,6 +97,18 @@ export const actions: Actions = {
 		const session = event.locals.auth();
 		if (!session) {
 			redirect(302, REDIRECT_GUEST_URL);
+		}
+
+		const status = await verifyEmailRateLimiter?.check(event);
+		if (status && status.limited) {
+			redirect(
+				{
+					type: 'error',
+					message: 'Too many requests',
+					description: `try again after ${formatSeconds(status.retryAfter)}.`
+				},
+				event
+			);
 		}
 
 		let request = await getUserEmailVerificationRequestFromCookie(event);

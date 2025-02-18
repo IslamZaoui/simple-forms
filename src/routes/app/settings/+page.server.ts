@@ -11,8 +11,10 @@ import { getUserPasswordHash, isEmailTaken, updateUserPassword } from '@/server/
 import { verifyPasswordHash } from '@/server/auth/utils';
 import { prisma } from '@/server/database';
 import { sendVerificationEmail } from '@/server/mail/email-verification';
+import { verifyEmailRateLimiter } from '@/server/rate-limiter/limiters/email';
+import { formatSeconds } from '@/utils/time';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, setError, superValidate } from 'sveltekit-superforms';
+import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 
@@ -76,6 +78,15 @@ const email = async (event: RequestEvent) => {
 
 	if (await isEmailTaken(form.data.email)) {
 		return setError(form, 'email', 'Email already taken');
+	}
+
+	const status = await verifyEmailRateLimiter?.check(event);
+	if (status && status.limited) {
+		return message(form, {
+			type: 'error',
+			message: 'Too many requests',
+			description: `try again after ${formatSeconds(status.retryAfter)}.`
+		});
 	}
 
 	const request = await createEmailVerificationRequest(session.user.id, form.data.email);
