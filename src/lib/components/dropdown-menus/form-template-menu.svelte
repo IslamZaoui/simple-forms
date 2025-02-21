@@ -29,14 +29,16 @@
 
 	<DropdownMenu.Content>
 		<DropdownMenu.Group>
-			<FormTemplateDialog data={template}>
-				{#snippet trigger({ props })}
-					<DropdownMenu.Item closeOnSelect={false} {...props}>
-						<PenIcon class="mr-2 size-4" />
-						<span>Edit</span>
-					</DropdownMenu.Item>
-				{/snippet}
-			</FormTemplateDialog>
+			{#if !template.published}
+				<FormTemplateDialog data={template}>
+					{#snippet trigger({ props })}
+						<DropdownMenu.Item closeOnSelect={false} {...props}>
+							<PenIcon class="mr-2 size-4" />
+							<span>Edit</span>
+						</DropdownMenu.Item>
+					{/snippet}
+				</FormTemplateDialog>
+			{/if}
 
 			<DeleteFormTemplateAlertDialog>
 				{#snippet trigger({ props })}

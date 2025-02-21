@@ -18,7 +18,8 @@ export const POST: RequestHandler = async (event) => {
 			userId: session.userId
 		},
 		select: {
-			id: true
+			id: true,
+			published: true
 		}
 	});
 	if (!template) {
@@ -30,6 +31,10 @@ export const POST: RequestHandler = async (event) => {
 			},
 			event
 		);
+	}
+
+	if (template.published) {
+		return error(400);
 	}
 
 	const body = await event.request.json();

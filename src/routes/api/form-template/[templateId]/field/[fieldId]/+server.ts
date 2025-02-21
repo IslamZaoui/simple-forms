@@ -1,7 +1,7 @@
 import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { updateFormTemplateFieldSchema } from '@/schemas/form-template';
 import { prisma } from '@/server/database';
-import { actionResult, superValidate } from 'sveltekit-superforms';
+import { actionResult, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { RequestHandler } from './$types';
 
@@ -18,7 +18,8 @@ export const POST: RequestHandler = async (event) => {
 			userId: session.userId
 		},
 		select: {
-			id: true
+			id: true,
+			published: true
 		}
 	});
 	if (!template) {
@@ -55,6 +56,14 @@ export const POST: RequestHandler = async (event) => {
 
 	const form = await superValidate(event, zod(updateFormTemplateFieldSchema));
 	if (!form.valid) {
+		return actionResult('failure', { form });
+	}
+
+	if (template.published) {
+		setMessage(form, {
+			type: 'error',
+			message: 'Published templates cannot be edited'
+		});
 		return actionResult('failure', { form });
 	}
 

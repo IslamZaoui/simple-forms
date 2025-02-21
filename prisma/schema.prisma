@@ -60,6 +60,7 @@ model FormTemplate {
   slug      String  @unique
   details   String?
   published Boolean @default(false)
+  hidden    Boolean @default(false)
 
   fields FormTemplateField[]
 

@@ -33,6 +33,48 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+	publish: async (event) => {
+		const session = event.locals.auth();
+		if (!session) {
+			return redirect(302, REDIRECT_GUEST_URL);
+		}
+
+		const { templateId } = event.params;
+		const template = await prisma.formTemplate.findUnique({
+			where: {
+				id: templateId,
+				userId: session.userId
+			}
+		});
+		if (!template) {
+			return redirect(
+				`/app/form-templates`,
+				{
+					type: 'error',
+					message: 'Template not found'
+				},
+				event
+			);
+		}
+
+		await prisma.formTemplate.update({
+			data: {
+				published: true
+			},
+			where: {
+				id: templateId
+			}
+		});
+
+		return redirect(
+			{
+				type: 'success',
+				message: 'Template published successfully'
+			},
+			event
+		);
+	},
+
 	deleteForm: async (event) => {
 		const session = event.locals.auth();
 		if (!session) {
@@ -99,7 +141,6 @@ export const actions: Actions = {
 
 		if (template.published) {
 			return redirect(
-				`/app/form-templates/${templateId}`,
 				{
 					type: 'error',
 					message: 'Template is published',
@@ -113,7 +154,6 @@ export const actions: Actions = {
 		const fieldId = formData.get('fieldId') as string | null;
 		if (!fieldId) {
 			return redirect(
-				`/app/form-templates/${templateId}`,
 				{
 					type: 'error',
 					message: 'Field not found'
@@ -125,7 +165,6 @@ export const actions: Actions = {
 		await prisma.formTemplateField.deleteMany({ where: { id: fieldId, templateId } });
 
 		return redirect(
-			`/app/form-templates/${templateId}`,
 			{
 				type: 'success',
 				message: 'Field deleted successfully'

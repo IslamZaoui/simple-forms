@@ -5,8 +5,8 @@
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '@/components/ui/tabs';
 	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
-	import BookIcon from 'lucide-svelte/icons/book-check';
 	import { Editor, Preview } from '@/components/form-template-builder';
+	import { PublishTemplateAlertDialog } from '@/components/alert-dialogs/index.js';
 
 	let { data } = $props();
 
@@ -34,12 +34,7 @@
 			</h2>
 			<div class="flex gap-2">
 				{#if !data.template.published}
-					<Button class="bg-muted/50" variant="outline" size={isMobile.current ? 'icon' : 'default'}>
-						<BookIcon class="size-4 {isMobile.current ? '' : 'mr-2'}" />
-						{#if !isMobile.current}
-							<span>Publish</span>
-						{/if}
-					</Button>
+					<PublishTemplateAlertDialog template={data.template} />
 				{/if}
 				<FormTemplateDropdownMenu template={data.template}>
 					{#snippet trigger({ props })}
@@ -52,7 +47,9 @@
 		</div>
 		{#if !isMobile.current}
 			<div class="flex h-full gap-4">
-				<Editor templateId={data.template.id} fields={data.fields} />
+				{#if !data.template.published}
+					<Editor templateId={data.template.id} fields={data.fields} />
+				{/if}
 				<Preview template={data.template} fields={data.fields} />
 			</div>
 		{:else}

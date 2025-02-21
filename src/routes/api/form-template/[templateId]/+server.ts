@@ -24,7 +24,8 @@ export const POST: RequestHandler = async (event) => {
 			userId: session.userId
 		},
 		select: {
-			id: true
+			id: true,
+			published: true
 		}
 	});
 
@@ -32,6 +33,14 @@ export const POST: RequestHandler = async (event) => {
 		setMessage(form, {
 			type: 'error',
 			message: 'Template not found'
+		});
+		return actionResult('failure', { form });
+	}
+
+	if (existingTemplate.published) {
+		setMessage(form, {
+			type: 'error',
+			message: 'Published templates cannot be edited'
 		});
 		return actionResult('failure', { form });
 	}
