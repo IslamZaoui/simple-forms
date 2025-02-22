@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { formTemplateSchemaGenerator } from '@/utils/schema';
 	import type { FormTemplateField } from '@prisma/client';
-	import SuperDebug, { defaults, superForm } from 'sveltekit-superforms';
+	import { defaults, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import MessageAlert from '@/components/forms/message-alert.svelte';
 	import { Button } from '@/components/ui/form';
@@ -38,6 +38,4 @@
 		{/if}
 		Submit
 	</Button>
-
-	<SuperDebug data={$formData} />
 </form>

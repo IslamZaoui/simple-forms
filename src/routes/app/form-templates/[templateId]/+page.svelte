@@ -5,6 +5,7 @@
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '@/components/ui/tabs';
 	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
+	import EyeIcon from 'lucide-svelte/icons/eye';
 	import { Editor, Preview } from '@/components/form-template-builder';
 	import { PublishTemplateAlertDialog } from '@/components/alert-dialogs/index.js';
 
@@ -53,14 +54,18 @@
 				<Preview template={data.template} fields={data.fields} />
 			</div>
 		{:else}
-			<Tabs.Root class="flex flex-1 flex-col" value="editor">
+			<Tabs.Root class="flex flex-1 flex-col" value={!data.template.published ? 'editor' : 'preview'}>
 				<Tabs.List class="w-full border border-muted bg-muted/50">
-					<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
+					{#if !data.template.published}
+						<Tabs.Trigger class="w-full" value="editor">Editor</Tabs.Trigger>
+					{/if}
 					<Tabs.Trigger class="w-full" value="preview">Preview</Tabs.Trigger>
 				</Tabs.List>
-				<Tabs.Content class="flex-1" value="editor">
-					<Editor templateId={data.template.id} fields={data.fields} />
-				</Tabs.Content>
+				{#if !data.template.published}
+					<Tabs.Content class="flex-1" value="editor">
+						<Editor templateId={data.template.id} fields={data.fields} />
+					</Tabs.Content>
+				{/if}
 				<Tabs.Content class="flex-1" value="preview">
 					<Preview template={data.template} fields={data.fields} />
 				</Tabs.Content>

@@ -75,6 +75,46 @@ export const actions: Actions = {
 		);
 	},
 
+	hide: async (event) => {
+		const session = event.locals.auth();
+		if (!session) {
+			return redirect(302, REDIRECT_GUEST_URL);
+		}
+
+		const { templateId } = event.params;
+		const template = await prisma.formTemplate.findUnique({
+			where: {
+				id: templateId,
+				userId: session.userId
+			}
+		});
+		if (!template) {
+			return redirect(
+				`/app/form-templates`,
+				{
+					type: 'error',
+					message: 'Template not found'
+				},
+				event
+			);
+		}
+
+		if (!template.published) {
+			return error(400);
+		}
+
+		await prisma.formTemplate.update({
+			data: {
+				hidden: !template.hidden
+			},
+			where: {
+				id: templateId
+			}
+		});
+
+		return {};
+	},
+
 	deleteForm: async (event) => {
 		const session = event.locals.auth();
 		if (!session) {
