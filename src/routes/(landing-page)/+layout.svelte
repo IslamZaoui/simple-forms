@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Button } from '@/components/ui/button';
-	import { LOGIN_URL } from '@/config/auth';
 
 	let { children } = $props();
 </script>
@@ -16,7 +15,7 @@
 			</a>
 			<div class="space-x-2">
 				<Button variant="ghost" size="sm">Contact</Button>
-				<Button variant="ghost" size="sm" href={LOGIN_URL}>Login</Button>
+				<Button variant="ghost" size="sm" href="/auth/login">Login</Button>
 			</div>
 		</div>
 	</header>

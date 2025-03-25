@@ -1,9 +1,9 @@
-import { REDIRECT_AFTER_REGISTER_URL, REDIRECT_USER_URL } from '@/config/auth';
 import { registerSchema } from '@/schemas/auth';
-import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session';
-import { createUser, isEmailTaken } from '@/server/auth/user';
+import { auth } from '@/server/auth';
+import { tryCatch } from '@/utils/helpers';
+import { APIError } from 'better-auth/api';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, setError, superValidate } from 'sveltekit-superforms';
+import { fail, setError, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -16,6 +16,7 @@ export const load: PageServerLoad = async (event) => {
 	return {
 		form: await superValidate(zod(registerSchema), {
 			defaults: {
+				name: '',
 				email: email ?? '',
 				password: '',
 				confirmPassword: ''
@@ -26,8 +27,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		if (event.locals.auth()) {
-			redirect(302, REDIRECT_USER_URL);
+		if (event.locals.auth) {
+			redirect(302, '/app/dashboard');
 		}
 
 		const form = await superValidate(event, zod(registerSchema));
@@ -35,24 +36,30 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		if (await isEmailTaken(form.data.email)) {
-			return setError(form, 'email', 'Email already taken');
+		const result = await tryCatch(
+			auth.api.signUpEmail({
+				body: form.data
+			})
+		);
+		if (!result.success) {
+			const { error } = result;
+			if (error instanceof APIError) {
+				switch (error.body?.code) {
+					case 'USER_ALREADY_EXISTS':
+						return setError(form, 'email', 'Email already taken');
+				}
+				console.log(error);
+			}
+
+			return setMessage(form, { type: 'error', message: 'Something went wrong' });
 		}
 
-		const newUser = await createUser(form.data);
-
-		const sessionToken = generateSessionToken();
-		const session = await createSession(sessionToken, newUser.id, {
-			rememberMe: true
-		});
-		setSessionTokenCookie(event, sessionToken, session.expiresAt);
-
 		redirect(
-			REDIRECT_AFTER_REGISTER_URL,
+			'/auth/login',
 			{
 				type: 'success',
 				message: 'You have successfully registered',
-				description: 'Verify your email to continue'
+				description: 'A confirmation email has been sent to your email address'
 			},
 			event
 		);

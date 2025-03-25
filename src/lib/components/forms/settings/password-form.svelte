@@ -6,15 +6,14 @@
 	import MessageAlert from '@/components/forms/message-alert.svelte';
 	import { changePasswordSchema } from '@/schemas/settings';
 	import { Separator } from '@/components/ui/separator';
-	import type { UserWithoutSecrets } from '@/server/database';
 	import { PasswordInput } from '@/components/ui/password-input';
-	import { FORGOT_PASSWORD_URL } from '@/config/auth';
 	import { Checkbox } from '@/components/ui/checkbox';
+	import type { User } from 'better-auth';
 
 	type Props = {
 		data: {
 			changePasswordForm: SuperValidated<Infer<typeof changePasswordSchema>>;
-			user: UserWithoutSecrets;
+			user: User;
 		};
 	};
 
@@ -27,7 +26,13 @@
 	const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form class="flex flex-col rounded-md border border-muted bg-muted/50" action="?/password" method="POST" use:enhance>
+<form
+	id="change-password"
+	class="flex flex-col rounded-md border border-muted bg-muted/50"
+	action="?/password"
+	method="POST"
+	use:enhance
+>
 	<div class="space-y-2 p-4">
 		<h2 class="text-2xl font-bold">Change Password</h2>
 
@@ -95,7 +100,7 @@
 	</div>
 	<Separator />
 	<div class="flex items-center justify-between px-4 py-2">
-		<a href={FORGOT_PASSWORD_URL} class="text-sm text-primary underline hover:no-underline"
+		<a href="/password/forgot" class="text-sm text-primary underline hover:no-underline"
 			>Forgot your current password?</a
 		>
 

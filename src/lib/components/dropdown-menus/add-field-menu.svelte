@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 	import { AddFieldDialog } from '@/components/dialogs';
 	import { afterNavigate } from '$app/navigation';
-	import { fieldLabels } from '@/config/form-builder';
+	import { fieldLabels } from '@/constants/form-builder';
 	import { FormTemplateFieldType } from '@prisma/client';
 
 	interface Props {
@@ -29,7 +29,7 @@
 		<DropdownMenu.Group>
 			<DropdownMenu.GroupHeading>Fields</DropdownMenu.GroupHeading>
 			<DropdownMenu.Separator />
-			{#each Object.entries(fieldLabels) as [type, { label, Icon }]}
+			{#each Object.entries(fieldLabels) as [type, { label, Icon }], i (i)}
 				<AddFieldDialog {templateId} type={type as FormTemplateFieldType}>
 					{#snippet trigger({ props })}
 						<DropdownMenu.Item closeOnSelect={false} {...props}>

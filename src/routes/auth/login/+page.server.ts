@@ -1,9 +1,9 @@
-import { REDIRECT_AFTER_LOGIN_URL, REDIRECT_USER_URL } from '@/config/auth';
 import { loginSchema } from '@/schemas/auth';
-import { createSession, generateSessionToken, setSessionTokenCookie } from '@/server/auth/session';
-import { getValidUser } from '@/server/auth/user';
+import { auth } from '@/server/auth';
+import { tryCatch } from '@/utils/helpers';
+import { APIError } from 'better-auth/api';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, setError, superValidate } from 'sveltekit-superforms';
+import { fail, setError, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -17,8 +17,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	default: async (event) => {
-		if (event.locals.auth()) {
-			redirect(302, REDIRECT_USER_URL);
+		if (event.locals.auth) {
+			redirect(302, '/app/dashboard');
 		}
 
 		const form = await superValidate(event, zod(loginSchema));
@@ -26,20 +26,28 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const existingUser = await getValidUser(form.data.email, form.data.password);
+		const result = await tryCatch(auth.api.signInEmail({ body: form.data }));
+		if (!result.success) {
+			const { error } = result;
+			if (error instanceof APIError) {
+				switch (error.body?.code) {
+					case 'INVALID_EMAIL_OR_PASSWORD':
+						return setError(form, 'email', 'Invalid email or password');
+					case 'EMAIL_NOT_VERIFIED':
+						return setMessage(form, {
+							type: 'error',
+							message: 'Email not verified',
+							description: 'A verification email has been sent to you'
+						});
+				}
+				console.log(error);
+			}
 
-		if (!existingUser) {
-			return setError(form, 'email', 'Invalid email or password');
+			return setMessage(form, { type: 'error', message: 'Something went wrong' });
 		}
 
-		const sessionToken = generateSessionToken();
-		const session = await createSession(sessionToken, existingUser.id, {
-			rememberMe: form.data.rememberMe
-		});
-		setSessionTokenCookie(event, sessionToken, session.expiresAt);
-
 		redirect(
-			REDIRECT_AFTER_LOGIN_URL,
+			'/app/dashboard',
 			{
 				type: 'success',
 				message: 'You have successfully logged in'

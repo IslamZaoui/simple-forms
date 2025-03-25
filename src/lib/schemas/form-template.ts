@@ -1,4 +1,4 @@
-import { FIELD_TYPE } from '@/config/form-builder';
+import { FIELD_TYPE } from '@/constants/form-builder';
 import { z } from 'zod';
 
 const baseFieldSchema = z.object({

@@ -41,7 +41,7 @@
 			{templateStatusLabels[params.get('status') as templateStatus] ?? 'All Templates'}
 		</Select.Trigger>
 		<Select.Content>
-			{#each Object.entries(templateStatusLabels) as [value, label]}
+			{#each Object.entries(templateStatusLabels) as [value, label], i (i)}
 				<Select.Item {value}>
 					{label}
 				</Select.Item>

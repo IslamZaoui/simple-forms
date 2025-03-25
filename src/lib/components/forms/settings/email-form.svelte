@@ -7,12 +7,12 @@
 	import MessageAlert from '@/components/forms/message-alert.svelte';
 	import { changeEmailSchema } from '@/schemas/settings';
 	import { Separator } from '@/components/ui/separator';
-	import type { UserWithoutSecrets } from '@/server/database';
+	import type { User } from 'better-auth';
 
 	type Props = {
 		data: {
 			changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
-			user: UserWithoutSecrets;
+			user: User;
 		};
 	};
 
@@ -25,7 +25,13 @@
 	const { form: formData, enhance, delayed, message } = form;
 </script>
 
-<form class="flex flex-col rounded-md border border-muted bg-muted/50" action="?/email" method="POST" use:enhance>
+<form
+	id="change-email"
+	class="flex flex-col rounded-md border border-muted bg-muted/50"
+	action="?/email"
+	method="POST"
+	use:enhance
+>
 	<div class="p-4">
 		<Form.Field {form} name="email">
 			<Form.Control>

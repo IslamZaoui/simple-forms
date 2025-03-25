@@ -1,13 +1,11 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth';
-import { deleteSessionTokenCookie, invalidateSession } from '@/server/auth/session';
+import { auth } from '@/server/auth';
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async (event) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (session) {
-		deleteSessionTokenCookie(event);
-		invalidateSession(session.id);
+		await auth.api.signOut({ headers: event.request.headers });
 	}
-	redirect(302, REDIRECT_GUEST_URL);
+	redirect(302, '/');
 };

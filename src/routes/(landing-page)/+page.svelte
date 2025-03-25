@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { authClient } from '@/client/auth';
 	import { Button } from '@/components/ui/button';
 	import { Input } from '@/components/ui/input';
 	import { Separator } from '@/components/ui/separator';
 	import GithubIcon from 'lucide-svelte/icons/github';
+
+	const handleGithubAuth = async () => {
+		await authClient.signIn.social({ provider: 'github' });
+	};
 </script>
 
 <main class="container flex flex-1 items-center justify-center py-10">
@@ -14,7 +19,7 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<Button variant="outline" class="relative" href="/auth/github">
+			<Button variant="outline" class="relative" onclick={handleGithubAuth}>
 				<GithubIcon class="absolute left-4 size-4" />
 				Continue with GitHub
 			</Button>
@@ -38,9 +43,9 @@
 
 		<div class="px-8 text-center text-sm text-muted-foreground">
 			<p>
-				By clicking continue, you agree to our{' '}
+				By clicking continue, you agree to our
 				<a href="#" class="underline underline-offset-4 hover:text-primary">Terms of Service</a>
-				{' '}and{' '}
+				and
 				<a href="#" class="underline underline-offset-4 hover:text-primary">Privacy Policy</a>
 				.
 			</p>

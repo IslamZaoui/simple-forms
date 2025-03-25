@@ -1,68 +1,82 @@
-import { FORGOT_PASSWORD_URL, REDIRECT_USER_URL, RESET_PASSWORD_VERIFY_EMAIL_URL } from '@/config/auth';
-import { resetPasswordSchema } from '@/schemas/post-auth';
-import {
-	deletePasswordResetSessionTokenCookie,
-	invalidateUserPasswordResetSessions,
-	validatePasswordResetSessionRequest
-} from '@/server/auth/password-reset';
-import {
-	createSession,
-	generateSessionToken,
-	invalidateUserSessions,
-	setSessionTokenCookie
-} from '@/server/auth/session';
-import { updateUserPassword } from '@/server/auth/user';
+import { resetPasswordSchema } from '@/schemas/auth';
+import { auth } from '@/server/auth';
+import { tryCatch } from '@/utils/helpers';
+import { APIError } from 'better-auth/api';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, superValidate } from 'sveltekit-superforms';
+import { fail, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
-	const session = await validatePasswordResetSessionRequest(event);
-	if (!session) {
-		redirect(302, FORGOT_PASSWORD_URL);
+	const error = event.url.searchParams.get('error');
+	if (error) {
+		redirect('/password/forgot', { type: 'error', message: error }, event);
 	}
-	if (!session.emailVerified) {
-		redirect(302, RESET_PASSWORD_VERIFY_EMAIL_URL);
+
+	const token = event.url.searchParams.get('token');
+	if (!token) {
+		redirect('/password/forgot', { type: 'error', message: 'Invalid token' }, event);
 	}
 
 	return {
-		email: session.email,
-		form: await superValidate(zod(resetPasswordSchema))
+		form: await superValidate(zod(resetPasswordSchema), {
+			defaults: {
+				token,
+				password: '',
+				confirmPassword: ''
+			}
+		})
 	};
 };
 
 export const actions: Actions = {
 	default: async (event) => {
-		const requestSession = await validatePasswordResetSessionRequest(event);
-		if (!requestSession) {
-			redirect(302, FORGOT_PASSWORD_URL);
-		}
-		if (!requestSession.emailVerified) {
-			redirect(302, RESET_PASSWORD_VERIFY_EMAIL_URL);
-		}
-
 		const form = await superValidate(event, zod(resetPasswordSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		await invalidateUserPasswordResetSessions(requestSession.userId);
-		await invalidateUserSessions(requestSession.userId);
-		await updateUserPassword(requestSession.userId, form.data.password);
+		const result = await tryCatch(
+			auth.api.resetPassword({
+				body: {
+					token: form.data.token,
+					newPassword: form.data.password
+				}
+			})
+		);
+		if (!result.success) {
+			const { error } = result;
+			if (error instanceof APIError) {
+				switch (error.body?.code) {
+					case 'INVALID_TOKEN':
+						return redirect('/password/forgot', { type: 'error', message: 'Invalid token' }, event);
+				}
+				console.log(error);
+			}
 
-		const sessionToken = generateSessionToken();
-		const session = await createSession(sessionToken, requestSession.userId, {
-			rememberMe: true
-		});
-		setSessionTokenCookie(event, sessionToken, session.expiresAt);
-		deletePasswordResetSessionTokenCookie(event);
+			return setMessage(form, { type: 'error', message: 'Something went wrong' });
+		}
+
+		const { data } = result;
+		if (!data.status) return setMessage(form, { type: 'error', message: 'Invalid token' });
+
+		if (event.locals.auth) {
+			redirect(
+				'/app/settings?tab=security#change-password',
+				{
+					type: 'success',
+					message: 'You have successfully reset your password'
+				},
+				event
+			);
+		}
 
 		redirect(
-			REDIRECT_USER_URL,
+			'/auth/login',
 			{
 				type: 'success',
-				message: 'You have successfully reset your password'
+				message: 'You have successfully reset your password',
+				description: 'you can now sign in with your new password'
 			},
 			event
 		);

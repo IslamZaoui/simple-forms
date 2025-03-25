@@ -19,7 +19,7 @@
 
 		{#if data.templates.length > 0}
 			<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{#each data.templates as template}
+				{#each data.templates as template (template.id)}
 					<FormTemplateCard {template} />
 				{/each}
 			</div>

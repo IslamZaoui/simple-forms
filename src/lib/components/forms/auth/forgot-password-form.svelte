@@ -4,7 +4,7 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import MessageAlert from '@/components/forms/message-alert.svelte';
-	import { forgotPasswordSchema } from '@/schemas/post-auth';
+	import { forgotPasswordSchema } from '@/schemas/auth';
 	import { Input } from '@/components/ui/input';
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof forgotPasswordSchema>> } } = $props();

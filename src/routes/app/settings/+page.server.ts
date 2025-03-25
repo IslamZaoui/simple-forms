@@ -1,27 +1,26 @@
-import { REDIRECT_GUEST_URL, VERIFY_EMAIL_URL } from '@/config/auth';
-import { changeEmailSchema, changeNameSchema, changePasswordSchema } from '@/schemas/settings';
-import { createEmailVerificationRequest, setEmailVerificationRequestCookie } from '@/server/auth/email-verification';
-import {
-	createSession,
-	generateSessionToken,
-	invalidateUserSessions,
-	setSessionTokenCookie
-} from '@/server/auth/session';
-import { getUserPasswordHash, isEmailTaken, updateUserPassword } from '@/server/auth/user';
-import { verifyPasswordHash } from '@/server/auth/utils';
-import { prisma } from '@/server/database';
-import { sendVerificationEmail } from '@/server/mail/email-verification';
-import { verifyEmailRateLimiter } from '@/server/rate-limiter/limiters/email';
-import { formatSeconds } from '@/utils/time';
+import { changeEmailSchema, changeImageSchema, changeNameSchema, changePasswordSchema } from '@/schemas/settings';
+import { auth } from '@/server/auth';
+import { tryCatch } from '@/utils/helpers';
+import { APIError } from 'better-auth/api';
 import { redirect } from 'sveltekit-flash-message/server';
-import { fail, message, setError, superValidate } from 'sveltekit-superforms';
+import { fail, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
+
+const availableTabs = ['general', 'security', 'danger'] as const;
+const getSelectedTab = (tab: string | null) => {
+	if (!tab) return 'general';
+	return availableTabs.includes(tab as (typeof availableTabs)[number])
+		? (tab as (typeof availableTabs)[number])
+		: 'general';
+};
 
 export const load: PageServerLoad = async (event) => {
 	const { user } = await event.parent();
 
 	return {
+		selectedTab: getSelectedTab(event.url.searchParams.get('tab')),
+		changeImageForm: await superValidate(zod(changeImageSchema)),
 		changeNameForm: await superValidate(zod(changeNameSchema), {
 			defaults: {
 				name: user.name ?? undefined
@@ -37,9 +36,9 @@ export const load: PageServerLoad = async (event) => {
 };
 
 const name = async (event: RequestEvent) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL);
+		redirect(302, '/');
 	}
 
 	const form = await superValidate(event, zod(changeNameSchema));
@@ -47,14 +46,14 @@ const name = async (event: RequestEvent) => {
 		return fail(400, { form });
 	}
 
-	await prisma.user.update({
-		where: {
-			id: session.user.id
-		},
-		data: {
-			name: form.data.name
+	const result = await tryCatch(auth.api.updateUser({ header: event.request.headers, body: { name: form.data.name } }));
+	if (!result.success) {
+		const { error } = result;
+		if (error instanceof APIError) {
+			console.log(error);
 		}
-	});
+		return redirect({ type: 'error', message: 'Something went wrong' }, event);
+	}
 
 	redirect(
 		{
@@ -66,9 +65,9 @@ const name = async (event: RequestEvent) => {
 };
 
 const email = async (event: RequestEvent) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL);
+		redirect(302, '/');
 	}
 
 	const form = await superValidate(event, zod(changeEmailSchema));
@@ -76,25 +75,29 @@ const email = async (event: RequestEvent) => {
 		return fail(400, { form });
 	}
 
-	if (await isEmailTaken(form.data.email)) {
-		return setError(form, 'email', 'Email already taken');
-	}
+	const result = await tryCatch(
+		auth.api.changeEmail({
+			headers: event.request.headers,
+			body: {
+				newEmail: form.data.email,
+				callbackURL: '/app/settings'
+			}
+		})
+	);
+	if (!result.success) {
+		const { error } = result;
+		if (error instanceof APIError) {
+			switch (error.body?.code) {
+				case 'COULDNT_UPDATE_YOUR_EMAIL':
+					return setError(form, 'email', 'Could not update your email');
+			}
+			console.log(error);
+		}
 
-	const status = await verifyEmailRateLimiter?.check(event);
-	if (status && status.limited) {
-		return message(form, {
-			type: 'error',
-			message: 'Too many requests',
-			description: `try again after ${formatSeconds(status.retryAfter)}.`
-		});
+		return redirect({ type: 'error', message: 'Something went wrong' }, event);
 	}
-
-	const request = await createEmailVerificationRequest(session.user.id, form.data.email);
-	await sendVerificationEmail(form.data.email, request.code);
-	setEmailVerificationRequestCookie(event, request);
 
 	redirect(
-		VERIFY_EMAIL_URL,
 		{
 			type: 'success',
 			message: 'Verification code has been sent to your email address'
@@ -104,9 +107,9 @@ const email = async (event: RequestEvent) => {
 };
 
 const password = async (event: RequestEvent) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL);
+		redirect(302, '/');
 	}
 
 	const form = await superValidate(event, zod(changePasswordSchema));
@@ -114,27 +117,28 @@ const password = async (event: RequestEvent) => {
 		return fail(400, { form });
 	}
 
-	const passwordHash = await getUserPasswordHash(session.user.id);
-	if (!passwordHash) {
-		return setError(form, 'currentPassword', 'Invalid password');
+	const result = await tryCatch(
+		auth.api.changePassword({
+			headers: event.request.headers,
+			body: {
+				currentPassword: form.data.currentPassword,
+				newPassword: form.data.newPassword,
+				revokeOtherSessions: form.data.logout
+			}
+		})
+	);
+	if (!result.success) {
+		const { error } = result;
+		if (error instanceof APIError) {
+			switch (error.body?.code) {
+				case 'INVALID_PASSWORD':
+					return setError(form, 'currentPassword', 'Invalid password');
+			}
+			console.log(error);
+		}
+
+		return redirect({ type: 'error', message: 'Something went wrong' }, event);
 	}
-
-	const validPassword = await verifyPasswordHash(passwordHash, form.data.currentPassword);
-	if (!validPassword) {
-		return setError(form, 'currentPassword', 'Invalid password');
-	}
-
-	if (form.data.logout) {
-		await invalidateUserSessions(session.user.id);
-	}
-
-	await updateUserPassword(session.user.id, form.data.newPassword);
-
-	const sessionToken = generateSessionToken();
-	const newSession = await createSession(sessionToken, session.user.id, {
-		rememberMe: true
-	});
-	setSessionTokenCookie(event, sessionToken, newSession.expiresAt);
 
 	return redirect(
 		{
@@ -146,22 +150,32 @@ const password = async (event: RequestEvent) => {
 };
 
 const deleteAccount = async (event: RequestEvent) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL);
+		redirect(302, '/');
 	}
 
-	await prisma.user.delete({
-		where: {
-			id: session.user.id
+	const result = await tryCatch(
+		auth.api.deleteUser({
+			headers: event.request.headers,
+			body: {
+				callbackURL: '/'
+			}
+		})
+	);
+	if (!result.success) {
+		const { error } = result;
+		if (error instanceof APIError) {
+			console.log(error);
 		}
-	});
+
+		return redirect({ type: 'error', message: 'Something went wrong' }, event);
+	}
 
 	redirect(
-		REDIRECT_GUEST_URL,
 		{
 			type: 'success',
-			message: 'You have successfully deleted your account'
+			message: 'Deletion verification has been sent to your email address'
 		},
 		event
 	);

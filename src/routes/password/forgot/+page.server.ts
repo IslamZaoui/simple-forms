@@ -1,17 +1,8 @@
-import { RESET_PASSWORD_VERIFY_EMAIL_URL } from '@/config/auth';
-import { forgotPasswordSchema } from '@/schemas/post-auth';
-import {
-	createPasswordResetSession,
-	invalidateUserPasswordResetSessions,
-	setPasswordResetSessionTokenCookie
-} from '@/server/auth/password-reset';
-import { generateSessionToken } from '@/server/auth/session';
-import { getUserByEmail } from '@/server/auth/user';
-import { sendPasswordResetEmail } from '@/server/mail/password-reset';
-import { forgotPasswordRateLimiter } from '@/server/rate-limiter/limiters/email';
-import { formatSeconds } from '@/utils/time';
-import { redirect } from '@sveltejs/kit';
-import { fail, message, setError, superValidate } from 'sveltekit-superforms';
+import { forgotPasswordSchema } from '@/schemas/auth';
+import { auth } from '@/server/auth';
+import { tryCatch } from '@/utils/helpers';
+import { APIError } from 'better-auth/api';
+import { fail, setMessage, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -36,26 +27,26 @@ export const actions: Actions = {
 			return fail(400, { form });
 		}
 
-		const existingUser = await getUserByEmail(form.data.email);
-		if (!existingUser) {
-			return setError(form, 'email', 'User not found');
+		const result = await tryCatch(
+			auth.api.forgetPassword({ body: { email: form.data.email, redirectTo: '/password/reset' } })
+		);
+
+		if (!result.success) {
+			const { error } = result;
+			if (error instanceof APIError) {
+				console.log(error);
+			}
+
+			return setMessage(form, { type: 'error', message: 'Something went wrong' });
 		}
 
-		const status = await forgotPasswordRateLimiter?.check(event);
-		if (status && status.limited) {
-			return message(form, {
-				type: 'error',
-				message: 'Too many requests',
-				description: `try again after ${formatSeconds(status.retryAfter)}.`
-			});
-		}
+		const { data } = result;
+		if (!data.status) return setMessage(form, { type: 'error', message: 'Invalid email' });
 
-		await invalidateUserPasswordResetSessions(existingUser.id);
-		const sessionToken = generateSessionToken();
-		const session = await createPasswordResetSession(sessionToken, existingUser.id, form.data.email);
-		await sendPasswordResetEmail(form.data.email, session.code);
-		setPasswordResetSessionTokenCookie(event, sessionToken, session.expiresAt);
-
-		redirect(302, RESET_PASSWORD_VERIFY_EMAIL_URL);
+		return setMessage(form, {
+			type: 'success',
+			message: 'Password reset email sent',
+			description: 'if email exists, you will receive an email'
+		});
 	}
 };

@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { NavUser } from '../navs';
 	import * as Sidebar from '@/components/ui/sidebar';
-	import type { UserWithoutSecrets } from '@/server/database';
 	import type { ComponentProps } from 'svelte';
 	import { ReusableSidebarGroup } from '../sidebar-group';
 	import { getUserFormTemplatesItems, userSpaceItems } from './groups';
 	import PlusIcon from 'lucide-svelte/icons/plus';
 	import { FormTemplateDialog } from '@/components/dialogs';
 	import type { FormTemplate } from '@prisma/client';
+	import type { User } from 'better-auth';
 
 	type Props = ComponentProps<typeof Sidebar.Root> & {
-		user: UserWithoutSecrets;
+		user: User;
 		latestTemplates: FormTemplate[];
 	};
 

@@ -1,4 +1,3 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { fieldReorderSchema } from '@/schemas/field';
 import { prisma } from '@/server/database';
 import { error } from '@sveltejs/kit';
@@ -6,16 +5,16 @@ import { redirect } from 'sveltekit-flash-message/server';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async (event) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		return redirect(302, REDIRECT_GUEST_URL);
+		return redirect(302, '/');
 	}
 
 	const { templateId } = event.params;
 	const template = await prisma.formTemplate.findUnique({
 		where: {
 			id: templateId,
-			userId: session.userId
+			userId: session.user.id
 		},
 		select: {
 			id: true,

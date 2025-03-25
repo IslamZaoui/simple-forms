@@ -1,5 +1,5 @@
 import { Flash } from '@/components/providers';
-import type { AuthData } from '@/server/auth/session';
+import type { Session, User } from 'better-auth';
 
 declare global {
 	namespace App {
@@ -7,7 +7,7 @@ declare global {
 			details?: string;
 		}
 		interface Locals {
-			auth(): AuthData | null;
+			auth: { user: User; session: Session } | null;
 		}
 		interface PageData {
 			flash?: Flash;

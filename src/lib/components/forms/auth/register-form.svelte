@@ -9,7 +9,6 @@
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import PasswordValidation, { type PasswordError } from '@/components/forms/auth/password-validation.svelte';
 	import MessageAlert from '@/components/forms/message-alert.svelte';
-	import { LOGIN_URL } from '@/config/auth';
 
 	let { data }: { data: { form: SuperValidated<Infer<typeof registerSchema>> } } = $props();
 
@@ -31,7 +30,7 @@
 	<Form.Field {form} name="name">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Name</Form.Label>
+				<Form.Label>Name <span class="text-destructive">*</span></Form.Label>
 				<Input type="text" placeholder="example..." autocomplete="name" {...props} bind:value={$formData.name} />
 			{/snippet}
 		</Form.Control>
@@ -97,6 +96,6 @@
 	<Separator />
 
 	<div class="text-center text-sm text-muted-foreground">
-		Already have an account? <a href={LOGIN_URL} class="text-primary underline">Login</a>
+		Already have an account? <a href="/auth/login" class="text-primary underline">Login</a>
 	</div>
 </form>

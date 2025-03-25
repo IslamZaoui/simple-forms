@@ -4,20 +4,28 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import SpinnerIcon from 'lucide-svelte/icons/loader-circle';
 	import MessageAlert from '@/components/forms/message-alert.svelte';
-	import { resetPasswordSchema } from '@/schemas/post-auth';
+	import { resetPasswordSchema } from '@/schemas/auth';
 	import { PasswordInput } from '@/components/ui/password-input';
+	import PasswordValidation, { type PasswordError } from './password-validation.svelte';
 
-	let { data }: { data: { form: SuperValidated<Infer<typeof resetPasswordSchema>>; email: string } } = $props();
+	let { data }: { data: { form: SuperValidated<Infer<typeof resetPasswordSchema>> } } = $props();
 
 	const form = superForm(data.form, {
 		validators: zodClient(resetPasswordSchema)
 	});
 
-	const { form: formData, enhance, delayed, message } = form;
+	const { form: formData, enhance, delayed, message, allErrors } = form;
+
+	const passwordError: PasswordError | undefined = $derived.by(() => {
+		const passwordRelated = $allErrors.filter((error) => error.path === 'password');
+		return passwordRelated.length > 0 ? passwordRelated[0] : undefined;
+	});
 </script>
 
 <form class="mx-auto w-full max-w-sm space-y-5 py-1" method="POST" use:enhance>
 	<MessageAlert {message} />
+
+	<input type="hidden" name="token" value={$formData.token} />
 
 	<Form.Field {form} name="password">
 		<Form.Control>
@@ -42,6 +50,8 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
+
+	<PasswordValidation {passwordError} />
 
 	<Form.Button class="relative w-full" disabled={$delayed}>
 		{#if $delayed}

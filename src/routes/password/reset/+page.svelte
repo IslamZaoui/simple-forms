@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ResetPasswordForm } from '@/components/forms/post-auth';
+	import { ResetPasswordForm } from '@/components/forms/auth';
 
 	let { data } = $props();
 </script>

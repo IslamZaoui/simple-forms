@@ -45,7 +45,7 @@
 									<Breadcrumb.Ellipsis class="size-4" />
 								</DropdownMenu.Trigger>
 								<DropdownMenu.Content align="start">
-									{#each links.slice(1, -1) as item}
+									{#each links.slice(1, -1) as item, i (i)}
 										<DropdownMenu.Item>
 											<a href={item.href ? item.href : '#'}>
 												{item.label}
@@ -65,7 +65,7 @@
 										<Drawer.Description>Select a page to navigate to.</Drawer.Description>
 									</Drawer.Header>
 									<div class="grid gap-1 px-4">
-										{#each links.slice(1, -1) as item}
+										{#each links.slice(1, -1) as item, i (i)}
 											<a href={item.href ? item.href : '#'} class="py-1 text-sm">
 												{item.label}
 											</a>
@@ -81,7 +81,7 @@
 					<Breadcrumb.Separator />
 				{/if}
 
-				{#each links.slice(links.length > ITEMS_TO_DISPLAY ? -1 : 0) as item}
+				{#each links.slice(links.length > ITEMS_TO_DISPLAY ? -1 : 0) as item, i (i)}
 					{@const isLast = item === links[links.length - 1]}
 					<Breadcrumb.Item>
 						{#if item.href}

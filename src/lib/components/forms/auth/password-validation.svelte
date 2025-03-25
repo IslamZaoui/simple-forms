@@ -22,7 +22,7 @@
 			<p class="text-sm text-green-500">Your password meets all requirements!</p>
 		{:else}
 			<ul class="list-disc space-y-1 pl-4 text-sm text-destructive">
-				{#each passwordError.messages as message}
+				{#each passwordError.messages as message, i (i)}
 					<li>{message}</li>
 				{/each}
 			</ul>

@@ -19,7 +19,7 @@
 		<Sidebar.GroupLabel class="text-muted-foreground">{label}</Sidebar.GroupLabel>
 		{@render action?.()}
 		<Sidebar.Menu>
-			{#each pages as { title, url, Icon, hasAction, data }}
+			{#each pages as { title, url, Icon, hasAction, data }, i (i)}
 				<Sidebar.MenuItem>
 					<Sidebar.MenuButton class={url === page.url.pathname ? 'text-primary/90 transition-colors' : ''}>
 						{#snippet child({ props })}

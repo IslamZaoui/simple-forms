@@ -3,9 +3,13 @@
 	import { enhance } from '$app/forms';
 	import { Button, buttonVariants } from '@/components/ui/button';
 	import * as AlertDialog from '@/components/ui/alert-dialog';
+	import { afterNavigate } from '$app/navigation';
+
+	let open = $state(false);
+	afterNavigate(() => (open = false));
 </script>
 
-<div class="flex flex-col rounded-md border border-destructive bg-muted/50">
+<div id="delete-account" class="flex flex-col rounded-md border border-destructive bg-muted/50">
 	<div class="space-y-2 p-4">
 		<h2 class="text-2xl font-bold">Delete Account</h2>
 		<p>
@@ -15,7 +19,7 @@
 	</div>
 	<Separator class="bg-destructive" />
 	<div class="flex items-center justify-end bg-destructive/25 px-4 py-2">
-		<AlertDialog.Root>
+		<AlertDialog.Root bind:open>
 			<AlertDialog.Trigger>
 				{#snippet child({ props })}
 					<Button {...props} variant="destructive">

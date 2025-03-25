@@ -5,7 +5,6 @@
 	import { Button } from '@/components/ui/button';
 	import * as Tabs from '@/components/ui/tabs';
 	import EllipsisIcon from 'lucide-svelte/icons/ellipsis-vertical';
-	import EyeIcon from 'lucide-svelte/icons/eye';
 	import { Editor, Preview } from '@/components/form-template-builder';
 	import { PublishTemplateAlertDialog } from '@/components/alert-dialogs/index.js';
 

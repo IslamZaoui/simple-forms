@@ -1,4 +1,3 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { updateFormTemplateFieldSchema } from '@/schemas/form-template';
 import { prisma } from '@/server/database';
 import { actionResult, setMessage, superValidate } from 'sveltekit-superforms';
@@ -6,16 +5,16 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async (event) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		return actionResult('redirect', REDIRECT_GUEST_URL);
+		return actionResult('redirect', '/');
 	}
 
 	const { templateId, fieldId } = event.params;
 	const template = await prisma.formTemplate.findUnique({
 		where: {
 			id: templateId,
-			userId: session.userId
+			userId: session.user.id
 		},
 		select: {
 			id: true,

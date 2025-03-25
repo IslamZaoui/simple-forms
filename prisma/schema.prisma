@@ -8,81 +8,96 @@ datasource db {
 }
 
 model User {
-  id            String  @id @default(nanoid())
-  name          String?
-  email         String  @unique
-  emailVerified Boolean @default(false)
-  githubId      Int?    @unique
-  passwordHash  String?
+  id            String         @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  formTemplates FormTemplate[]
 
-  sessions                 Session[]
-  passwordResetSessions    PasswordResetSession[]
-  FormTemplate             FormTemplate[]
-  emailVerificationRequest EmailVerificationRequest?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@unique([email])
+  @@map("user")
 }
 
 model Session {
   id        String   @id
+  token     String
   userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ipAddress String?
+  userAgent String?
   expiresAt DateTime
+  createdAt DateTime
+  updatedAt DateTime
 
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+  @@unique([token])
+  @@map("session")
 }
 
-model EmailVerificationRequest {
-  id        String   @id @default(nanoid())
-  userId    String   @unique
-  email     String
-  code      String
-  expiresAt DateTime
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
 
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+  @@map("account")
 }
 
-model PasswordResetSession {
-  id            String   @id
-  userId        String
-  email         String
-  emailVerified Boolean  @default(false)
-  code          String
-  expiresAt     DateTime
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+  @@map("verification")
 }
 
 model FormTemplate {
-  id        String  @id @default(nanoid())
+  id        String              @id @default(nanoid())
   userId    String
+  user      User                @relation(references: [id], fields: [userId], onDelete: Cascade)
   title     String
-  slug      String  @unique
+  slug      String              @unique
   details   String?
-  published Boolean @default(false)
-  hidden    Boolean @default(false)
+  published Boolean             @default(false)
+  hidden    Boolean             @default(false)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  fields    FormTemplateField[]
 
-  fields FormTemplateField[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+  @@map("form_template")
 }
 
 model FormTemplateField {
-  id          String                @id @default(nanoid())
-  templateId  String
-  order       Int
-  label       String
-  required    Boolean
-  description String?
-  placeholder String?
-  type        FormTemplateFieldType
-  min         Int?
-  max         Int?
+  id           String                @id @default(nanoid())
+  templateId   String
+  formTemplate FormTemplate          @relation(references: [id], fields: [templateId], onDelete: Cascade)
+  order        Int
+  label        String
+  required     Boolean
+  type         FormTemplateFieldType
+  description  String?
+  placeholder  String?
+  min          Int?
+  max          Int?
 
-  formTemplate FormTemplate @relation(references: [id], fields: [templateId], onDelete: Cascade)
+  @@map("form_template_field")
 }
 
 enum FormTemplateFieldType {

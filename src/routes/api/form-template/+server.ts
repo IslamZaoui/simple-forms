@@ -1,4 +1,3 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { formTemplateSchema } from '@/schemas/form-template';
 import { prisma } from '@/server/database';
 import { redirect } from 'sveltekit-flash-message/server';
@@ -7,9 +6,9 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async (event) => {
-	const session = event.locals.auth();
+	const session = event.locals.auth;
 	if (!session) {
-		redirect(302, REDIRECT_GUEST_URL);
+		redirect(302, '/');
 	}
 
 	const form = await superValidate(event, zod(formTemplateSchema));
@@ -33,7 +32,7 @@ export const POST: RequestHandler = async (event) => {
 	const template = await prisma.formTemplate.create({
 		data: {
 			...form.data,
-			userId: session.userId
+			userId: session.user.id
 		},
 		select: {
 			id: true

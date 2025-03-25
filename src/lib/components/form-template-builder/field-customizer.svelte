@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { FormTemplateField } from '@prisma/client';
-	import { fieldLabels } from '@/config/form-builder';
+	import { fieldLabels } from '@/constants/form-builder';
 	import { DeleteFieldAlertDialog } from '@/components/alert-dialogs';
 	import { EditFieldDialog } from '@/components/dialogs';
 	import { CSS, styleObjectToString } from '@dnd-kit-svelte/utilities';

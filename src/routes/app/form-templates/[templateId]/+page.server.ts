@@ -1,4 +1,3 @@
-import { REDIRECT_GUEST_URL } from '@/config/auth';
 import { prisma } from '@/server/database';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
@@ -34,16 +33,16 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
 	publish: async (event) => {
-		const session = event.locals.auth();
+		const session = event.locals.auth;
 		if (!session) {
-			return redirect(302, REDIRECT_GUEST_URL);
+			return redirect(302, '/');
 		}
 
 		const { templateId } = event.params;
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
-				userId: session.userId
+				userId: session.user.id
 			}
 		});
 		if (!template) {
@@ -76,16 +75,16 @@ export const actions: Actions = {
 	},
 
 	hide: async (event) => {
-		const session = event.locals.auth();
+		const session = event.locals.auth;
 		if (!session) {
-			return redirect(302, REDIRECT_GUEST_URL);
+			return redirect(302, '/');
 		}
 
 		const { templateId } = event.params;
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
-				userId: session.userId
+				userId: session.user.id
 			}
 		});
 		if (!template) {
@@ -116,16 +115,16 @@ export const actions: Actions = {
 	},
 
 	deleteForm: async (event) => {
-		const session = event.locals.auth();
+		const session = event.locals.auth;
 		if (!session) {
-			return redirect(302, REDIRECT_GUEST_URL);
+			return redirect(302, '/');
 		}
 
 		const { templateId } = event.params;
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
-				userId: session.userId
+				userId: session.user.id
 			}
 		});
 		if (!template) {
@@ -152,16 +151,16 @@ export const actions: Actions = {
 	},
 
 	deleteField: async (event) => {
-		const session = event.locals.auth();
+		const session = event.locals.auth;
 		if (!session) {
-			return redirect(302, REDIRECT_GUEST_URL);
+			return redirect(302, '/');
 		}
 
 		const { templateId } = event.params;
 		const template = await prisma.formTemplate.findUnique({
 			where: {
 				id: templateId,
-				userId: session.userId
+				userId: session.user.id
 			},
 			select: {
 				id: true,

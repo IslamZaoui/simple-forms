@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { email, name, password } from './auth';
+import { email, image, name, password } from './auth';
+
+export const changeImageSchema = z.object({
+	image
+});
 
 export const changeNameSchema = z.object({
 	name
